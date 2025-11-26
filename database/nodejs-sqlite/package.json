@@ -8,6 +8,9 @@
   },
   "keywords": [],
   "author": "",
+  "type": "module",
   "license": "ISC",
-  "type": "module"
+  "dependencies": {
+    "better-sqlite3": "^12.4.6"
+  }
 }

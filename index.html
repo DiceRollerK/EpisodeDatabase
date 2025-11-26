@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Epizodu datu bāze</title>
     <link rel="stylesheet" href="style.css">
+    <script src="import.js" type="module" defer></script>
     <script src="script.js" defer></script>
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
@@ -19,8 +20,9 @@
             <h2>Meklēt epizodi</h2>
             <div class="ievadi">
                 <input type="text" class="textievads" placeholder="Pier Pressure">
-                <input type="submit" value="Meklēt" class="poga">
+                <input type="submit" id="btn" value="Meklēt" class="poga">
             </div>
+            <p id="test-output" class="output"></p>
         </section>
     </main>
 </body>
