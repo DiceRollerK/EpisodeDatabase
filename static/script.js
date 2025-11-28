@@ -6,14 +6,26 @@ document.querySelector("#btn").addEventListener("click", () =>{
     //document.querySelector("#test-output").textContent = db.prepare('SELECT * FROM time;').all();
     fetch('/clicked', {method: 'POST'})
     .then(function(response) {
-        if(response.ok) return response.json();
+        console.log('1')
+        if(response.ok) {
+            console.log('2')
+            return response.json();
+        } 
         throw new Error('Request failed.');
     })
     .then(function(data) {
-        console.log(JSON.stringify(data))
-        document.getElementById('test-output').innerHTML = JSON.stringify(data);
+        console.log('3');
+        console.log(data.name)
+        console.log('4');
+        document.getElementById('test-output').innerHTML = 
+        `
+        Nosaukums: ${data.name}<br>
+        Sezona: ${data.season} Epizode: ${data.episode}<br>
+        Raidīšanas datums: ${data.date}
+        `;
     })
     .catch(function(error) {
+        console.log('5')
         console.log(error);
     });
 })

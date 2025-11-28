@@ -52,8 +52,8 @@ app.post('/clicked', (req, res) => {
         res.sendStatus(201);
     });
     */
-    console.log(db.prepare('SELECT * FROM time').all());
-    res.send(db.prepare('SELECT * FROM time;').all());
+    console.log(db.prepare('SELECT * FROM episode;').all()[1]);
+    res.send(db.prepare('SELECT * FROM episode;').all()[1]);
 });
 
 import Database from 'better-sqlite3';
