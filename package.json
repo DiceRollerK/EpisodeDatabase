@@ -3,5 +3,16 @@
     "@types/better-sqlite3": "^7.6.13",
     "better-sqlite3": "^12.4.6",
     "express": "^5.1.0"
-  }
+  },
+  "name": "nodejs-sqlite",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "type": "module",
+  "license": "ISC"
 }
