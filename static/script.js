@@ -2,12 +2,9 @@ console.log('test')
 //import Database from "./database/nodejs-sqlite/index.mjs";
 //const db = new Database('EpisodeDatabase.db');
 
-/*
-document.getElementById("btn").addEventListener("click", () =>{
-    var textValue = document.getElementById('text-input').value;
-    if (textValue == '') textValue = 'Pier Pressure';
-    //document.querySelector("#test-output").textContent = db.prepare('SELECT * FROM time;').all();
-    fetch('/clicked', {method: 'POST'})
+
+document.getElementById("btn-all").addEventListener("click", () =>{
+    fetch('/clicked', {method: 'GET'})
     .then(function(response) {
         console.log('1')
         if(response.ok) {
@@ -20,32 +17,39 @@ document.getElementById("btn").addEventListener("click", () =>{
         console.log('3');
         console.log(data[0].name);
         console.log('4');
-        console.log(textValue);
 
         document.getElementById('output').innerHTML = "";
-
         document.getElementById('output').style.display = 'flex';
+        document.getElementById('output').classList.remove('bg-danger');
 
         for (let i = 0; i < data.length; i++) {
 
-        var div = document.createElement("div");
+        let div = document.createElement("div");
         document.getElementById("output").appendChild(div);
-        div.classList.add('output-inside')
+        div.classList.add('card', 'my-2')
 
-        var img = document.createElement("img");
+        let img = document.createElement("img");
         img.classList.add('logo');
-
-        var text = document.createElement('p');
-        text.id = 'text-output'
-        
         div.appendChild(img);
-        div.appendChild(text);
+
+        let div2  = document.createElement("div");
+        div.appendChild(div2);
+        div2.classList.add('card-body', 'p-2');
+
+
+        let h5 = document.createElement('h5');
+        h5.classList.add("card-title", "fs-4'");
+        let text = document.createElement('p');
+        text.classList.add("card-text", "fs-5");
+        
+        div2.appendChild(h5);
+        div2.appendChild(text);
 
         img.setAttribute("src", data[i].logo);
 
+        h5.innerHTML = `&quot;${data[i].ename}&quot;`
         text.innerHTML = 
         `
-        Nosaukums: ${data[i].ename}<br>
         Sezona-epizode: ${data[i].season}-${data[i].episode}<br>
         Raidīšanas datums: ${data[i].date}
         `;
@@ -56,10 +60,10 @@ document.getElementById("btn").addEventListener("click", () =>{
         console.log(error);
     });
 })
-*/
+
 
 document.getElementById("btn").addEventListener("click", () => {
-    var textValue = document.getElementById('text-input').value;
+    let textValue = document.getElementById('text-input').value;
     if (textValue == '') textValue = 'Pier Pressure';
 
    fetch(`/search?term=${textValue}`, {method: 'POST'})
@@ -73,40 +77,48 @@ document.getElementById("btn").addEventListener("click", () => {
     })
     .then(function(data) {
         document.getElementById('output').innerHTML = "";
-
         document.getElementById('output').style.display = 'flex';
 
         if (data[0] === undefined) {
+            document.getElementById('output').classList.add('bg-danger');
             console.log('8')
-            var div = document.createElement("div");
+            let div = document.createElement("div");
             document.getElementById("output").appendChild(div);
             div.classList.add('output-inside')
-            var text = document.createElement('p');
+            let text = document.createElement('p');
             div.appendChild(text);
             text.id = 'text-output'
             text.innerHTML = `Nevarēju atrast epizodi!`
         } else {
+            document.getElementById('output').classList.remove('bg-danger');
             console.log('9')
             for (let i = 0; i < data.length; i++) {
 
-            var div = document.createElement("div");
+            let div = document.createElement("div");
             document.getElementById("output").appendChild(div);
-            div.classList.add('output-inside')
+            div.classList.add('card', 'my-2')
 
-            var img = document.createElement("img");
+            let img = document.createElement("img");
             img.classList.add('logo');
-
-            var text = document.createElement('p');
-            text.id = 'text-output'
-            
             div.appendChild(img);
-            div.appendChild(text);
+
+            let div2  = document.createElement("div");
+            div.appendChild(div2);
+            div2.classList.add('card-body', 'p-2');
+            
+            let h5 = document.createElement('h5');
+            h5.classList.add("card-title", "fs-4'");
+            let text = document.createElement('p');
+            text.classList.add("card-text", "fs-5");
+            
+            div2.appendChild(h5);
+            div2.appendChild(text);
 
             img.setAttribute("src", data[i].logo);
 
+            h5.innerHTML = `&quot;${data[i].ename}&quot;`
             text.innerHTML = 
             `
-            Nosaukums: ${data[i].ename}<br>
             Sezona-epizode: ${data[i].season}-${data[i].episode}<br>
             Raidīšanas datums: ${data[i].date}
             `;
@@ -118,3 +130,5 @@ document.getElementById("btn").addEventListener("click", () => {
         console.log(error);
     });
 });
+
+//document.getElementById('genre').addEventListener('')

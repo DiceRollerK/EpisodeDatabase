@@ -42,7 +42,7 @@ app.get('/', function(req, res) {
 app.post('/search', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
     const searchTerm = req.query.term;
-    var searchValue = '';
+    let searchValue = '';
 
     if (!searchTerm) {
         searchValue = 'Pier Pressure'
@@ -54,22 +54,19 @@ app.post('/search', (req, res) => {
 })
 
 
-/*
-app.post('/clicked', (req, res) => {
+
+app.get('/clicked', (req, res) => {
     const click = {clickTime: new Date()};
     console.log(click);
     console.log(req.get);
     
-
-    
-
     //let search = document.querySelector("#text-input").value
     //console.log(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s WHERE s.show_id = e.id_show WHERE ename LIKE '%${search}%'`).all());
     //console.log(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s WHERE s.show_id = e.id_show`).all());
     //console.log(db.prepare('SELECT * FROM episode, show;').all()[1]);
     res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s WHERE (s.show_id = e.id_show);`).all());
 });
-*/
+
 
 import Database from 'better-sqlite3';
 const db = new Database('./database/nodejs-sqlite/EpisodeDatabase.db');
