@@ -69,7 +69,7 @@ app.post('/search', (req, res) => {
     } else if (search_id = -1) {
         res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s, story, time, genre, theme
         WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme)
-        AND (show_id = ${showID});`).all());
+        AND (show_id = ${showID}) ORDER BY season ASC, episode ASC;`).all());
     }
 
 })

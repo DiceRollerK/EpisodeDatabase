@@ -126,7 +126,7 @@ function serialaVeidosana(data, i) {
 
     let div2  = document.createElement("div");
     div3.appendChild(div2);
-    div2.classList.add('card-body', 'p-2', 'mw-80');
+    div2.classList.add('card-body', 'p-2');
                 
     let h5 = document.createElement('h5');
     h5.classList.add("card-title", "fs-4'");
@@ -167,7 +167,7 @@ function veidosana(data, serials) {
 
     let div2  = document.createElement("div");
     div.appendChild(div2);
-    div2.classList.add('card-body', 'p-2', 'mw-80');
+    div2.classList.add('card-body', 'p-2');
             
     let h5 = document.createElement('h5');
     h5.classList.add("card-title", "fs-4'");
@@ -190,3 +190,16 @@ function veidosana(data, serials) {
     img.addEventListener("click", (seriesEpisodes));
     };
 }
+
+function resizePageMobile(){
+    let a = document.getElementById('input-group');
+
+    if (window.innerWidth <= 900) {
+        a.classList.add('input-group-sm');
+    }else{ 
+        a.classList.remove('input-group-sm');
+    }
+
+}
+resizePageMobile();
+window.addEventListener('resize',resizePageMobile);
