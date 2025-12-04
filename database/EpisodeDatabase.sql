@@ -65,9 +65,9 @@ favourite INT
 );
 
 INSERT INTO episode VALUES(1,'Pilot','2003-11-02',1,1,'Komēdija',1,1,0);
-INSERT INTO episode VALUES(2,'The Marine Biologist','1994-02-10',5,14,'Komēdija',2,2,1);
+INSERT INTO episode VALUES(2,'The Marine Biologist','1994-02-10',5,14,'Komēdija',2,2,0);
 INSERT INTO episode VALUES(3,'Pier Pressure','2004-01-11',1,10,'Komēdija',1,3,0);
-INSERT INTO episode VALUES(4,'Crossroads','2019-11-22',3,11,'Komēdija-drāma',3,4,1);
+INSERT INTO episode VALUES(4,'Crossroads','2019-11-22',3,11,'Komēdija-drāma',3,4,0);
 INSERT INTO episode VALUES(5,'Three Robots','2019-03-15',1,2,'Komēdija',4,5,0);
 INSERT INTO episode VALUES(6,'Sonnie''s Edge','2019-03-15',1,1,'Ass sižets',4,6,0);
 INSERT INTO episode VALUES(7,'The Witness','2019-03-15',1,3,'Ass sižets',4,7,0);
@@ -84,8 +84,8 @@ CREATE TABLE show (
 	favourite INT
 );
 
-INSERT INTO show VALUES(1,'Arrested Development',1,'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arrested_Development.svg/2560px-Arrested_Development.svg.png',1,1,1);
+INSERT INTO show VALUES(1,'Arrested Development',1,'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arrested_Development.svg/2560px-Arrested_Development.svg.png',1,1,0);
 INSERT INTO show VALUES(2,'Seinfeld',2,'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Seinfeld_logo.svg/2560px-Seinfeld_logo.svg.png',1,2,0);
 INSERT INTO show VALUES(3,'Room 104',3,'https://upload.wikimedia.org/wikipedia/en/d/d5/Room_104_teaser.png',3,3,0);
-INSERT INTO show VALUES(4,'Love, Death & Robots',4,'https://upload.wikimedia.org/wikipedia/en/c/cb/Love%2C_Death_%26_Robots_Logo.png',4,4,1);
+INSERT INTO show VALUES(4,'Love, Death & Robots',4,'https://upload.wikimedia.org/wikipedia/en/c/cb/Love%2C_Death_%26_Robots_Logo.png',4,4,0);
 COMMIT;

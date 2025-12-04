@@ -5,6 +5,8 @@
 //Izvadīt datus
 //console.log(db.prepare('SELECT * FROM time;').all());
 
+let debug = false;
+
 import express from'express';
 import path from'path';
 const app = express();
@@ -38,6 +40,12 @@ app.post('/search', (req, res) => {
         showID = db.prepare(`SELECT show_id FROM show WHERE name = '${a}' LIMIT 1`).all()[0].show_id;
     }
 
+    let sortID;
+    if (req.query.sortID) {
+        if (debug) console.log(req.query.sortID);
+        sortID = req.query.sortID; 
+    }
+
     let searchValue;
     if (req.query.term) {
         searchValue = req.query.term;
@@ -47,24 +55,33 @@ app.post('/search', (req, res) => {
     }
     switch(search_id) {
     case '0':
+        if (debug) console.log(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story 
+        WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%')` : ''} 
+        AND (ename LIKE '%${searchValue}%' OR s.name LIKE '%${searchValue}%' OR element1 LIKE '%${searchValue}%' OR element2 LIKE '%${searchValue}%' OR element3 LIKE '%${searchValue}%'
+        ) ${sort(parseInt(sortID))};`);
+
         res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story 
         WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%')` : ''} 
-        AND (ename LIKE '%${searchValue}%' OR s.name LIKE '%${searchValue}%' OR element1 LIKE '%${searchValue}%' OR element2 LIKE '%${searchValue}%' OR element3 LIKE '%${searchValue}%');`).all());
+        AND (ename LIKE '%${searchValue}%' OR s.name LIKE '%${searchValue}%' OR element1 LIKE '%${searchValue}%' OR element2 LIKE '%${searchValue}%' OR element3 LIKE '%${searchValue}%'
+        ) ${sort(parseInt(sortID))};`).all());
         break;
     case '1':
         res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story 
         WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%' )` : ''} 
-        AND (ename LIKE '%${searchValue}%');`).all());
+        AND (ename LIKE '%${searchValue}%'
+        ) ${sort(parseInt(sortID))};`).all());
         break;
     case '2':
         res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story 
         WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%')` : ''} 
-        AND (s.name LIKE '%${searchValue}%');`).all());
+        AND (s.name LIKE '%${searchValue}%'
+        ) ${sort(parseInt(sortID))};`).all());
         break;
     case '3':
         res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story 
         WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%')` : ''} 
-        AND (element1 LIKE '%${searchValue}%' OR element2 LIKE '%${searchValue}%' OR element3 LIKE '%${searchValue}%');`).all());
+        AND (element1 LIKE '%${searchValue}%' OR element2 LIKE '%${searchValue}%' OR element3 LIKE '%${searchValue}%'
+        ) ${sort(sortid)};`).all());
         break;
     case '-1':
         res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story, time, genre, theme
@@ -78,6 +95,21 @@ app.post('/search', (req, res) => {
         break;
     }
 })
+
+function sort(sortid) {
+    switch (sortid) {
+        case 0:
+            return ' ';
+        case 1:
+            return 'ORDER BY s.name';
+        case 2:
+            return 'ORDER BY e.name';
+        case 3:
+            return 'ORDER BY date';
+        case 4:
+            return 'ORDER BY season, episode';
+    }
+}
 
 app.get('/clicked', (req, res) => {
     res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story WHERE (s.show_id = e.id_show) AND (story_id = id_story);`).all());

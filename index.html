@@ -39,11 +39,22 @@
             <section class="meklet">
                 <h2>Meklēt datu bāzē</h2>
                 <div class="input-group mb-3" id="input-group">
+                    <input type="text" class="form-control border" placeholder="Pier Pressure" name="term" id="text-input" aria-label="Recipient’s username" aria-describedby="button-addon2">
+                    <button class="btn btn-secondary border" type="button" id="btn">Meklēt</button>
+                </div>
+                <div class="input-group justify-content-center" id="input-group2">
                     <select class="btn btn-secondary form-select-sm border" id="inputGroupSelect01">
                         <option value="0" selected>Ko meklēt?</option>
                         <option value="1">Epizodes nosaukums</option>
                         <option value="2">Seriāla nosaukums</option>
                         <option value="3">Stāsta elementi</option>
+                    </select>
+                    <select class="btn btn-secondary form-select-sm border" id="inputGroupSelect03">
+                        <option value="0">Pēc kā kārtot?</option>
+                        <option value="1">Seriāla nosaukuma alfabētiski</option>
+                        <option value="2">Epizodes nosaukuma alfabētiski</option>
+                        <option value="3">Raidīšanas datuma</option>
+                        <option value="4">Sezonas-epizodes</option>
                     </select>
                     <select class="btn btn-secondary form-select-sm border" id="inputGroupSelect02">
                         <option selected>Žanrs</option>
@@ -52,25 +63,10 @@
                         <option value="Šausmas">Šausmas</option>
                         <option value="Ass sižets">Ass sižets</option>
                     </select>
-                    <input type="text" class="form-control border" placeholder="Pier Pressure" name="term" id="text-input" aria-label="Recipient’s username" aria-describedby="button-addon2">
-                    <button class="btn btn-secondary border" type="button" id="btn">Meklēt</button>
                 </div>
                 <div class="output-container border border-success rounded" id="series">
                 </div>
                 <div class="output-container border border-success rounded" id="output">
-                    <!--
-                    <img src="" alt="logo" class="logo" id="logo">
-                    <p id="text-output" class="output"></p>
-                    -->
-                    <!--
-                    <div class="card" style="width: 18rem;">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arrested_Development.svg/2560px-Arrested_Development.svg.png" class="card-img-top" alt="logo">
-                        <div class="card-body">
-                            <h5 class="card-title fs-4">&quot;Pilot&quot;</h5>
-                            <p class="card-text fs-5">Sezona-epizode: 1-1<br>Raidīšanas datums: 2003-11-03</p>
-                        </div>
-                    </div>
-                    -->
                 </div>
             </section>
         </main>

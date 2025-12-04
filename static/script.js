@@ -1,6 +1,6 @@
 //import Database from "./database/nodejs-sqlite/index.mjs";
 //const db = new Database('EpisodeDatabase.db');
-let debug = true;
+let debug = false;
 
 
 document.getElementById("btn-all").addEventListener("click", () =>{
@@ -81,8 +81,9 @@ function search() {
     if (textValue == '') textValue = 'Pier Pressure';
     let genre = document.getElementById('inputGroupSelect02').value;
     let searchID = document.getElementById('inputGroupSelect01').value;
+    let sortID = document.getElementById('inputGroupSelect03').value;
 
-   fetch(`/search?term=${textValue}${genre != "Žanrs" ? '&genre='+genre : ''}&searchID=${searchID}`, {method: 'POST'})
+   fetch(`/search?term=${textValue}${genre != "Žanrs" ? '&genre='+genre : ''}&searchID=${searchID}&sortID=${sortID}`, {method: 'POST'})
     .then(function(response) {
         if(response.ok) {
             return response.json();
@@ -107,6 +108,7 @@ function search() {
 
 function neatrada() {
     document.getElementById('series').style.display = 'none';
+    document.getElementById('output').style.display = 'flex';
     document.getElementById('output').classList.add('bg-danger');
     let div = document.createElement("div");
     document.getElementById("output").appendChild(div);
@@ -316,13 +318,26 @@ function favourite() {
 
 function smallScreen(){
     let a = document.getElementById('input-group');
+    let a2 = document.getElementById('input-group2');
 
     if (window.innerWidth <= 900) {
         a.classList.add('input-group-sm');
+        a2.classList.add('input-group-sm');
     }else{ 
         a.classList.remove('input-group-sm');
+        a2.classList.remove('input-group-sm');
     }
 
+    if(window.innerWidth <= 600) {
+        a2.classList.remove('input-group');
+        a2.classList.remove('input-group-sm');
+        a2.classList.add('d-flex')
+        a2.classList.add('flex-column')
+    } else {
+        a2.classList.add('input-group');
+        a2.classList.remove('d-flex')
+        a2.classList.remove('flex-column');
+    }
 }
 smallScreen();
 window.addEventListener('resize', smallScreen);
