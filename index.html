@@ -9,6 +9,7 @@
         <script src="script.js" defer></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     </head>
     <body class="bg-info">
         <nav class="navbar navbar-expand-lg .bg-secondary.bg-gradient shadow p-3 mb-5 fixed-top" style="background-color: var(--bs-orange);" data-bs-theme="light">
@@ -18,34 +19,25 @@
                 <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/">Mājaslapa</a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link active" href="#" id="btn-all">Visas epizodes</a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link active" href="#" id="btn-all-series">Visi seriāli</a>
-                    </li>
-                </ul>
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Mājaslapa</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link active" href="#" id="btn-all">Visas epizodes</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link active" href="#" id="btn-all-series">Visi seriāli</a>
+                        </li>
+                    </ul>
+                    <a class="nav-link active" href="#" id="btn-favourites">Mīļākie</a>
                 </div>
             </div>
         </nav>
-        <!--
-        <header>
-            <a href="#"><h1>Epizodu datu bāze</h1></a>
-        </header>
-        -->
-        <main >
+
+        <main>
             <section class="meklet">
                 <h2>Meklēt datu bāzē</h2>
-                <!--
-                <div class="ievadi" id="ievads">
-                    <input type="text" class="textievads" placeholder="Pier Pressure" name="term" id="text-input">
-                    <input type="submit" id="btn" value="Meklēt" class="poga">
-                </div>
-                -->
                 <div class="input-group mb-3" id="input-group">
                     <select class="btn btn-secondary form-select-sm border" id="inputGroupSelect01">
                         <option value="0" selected>Ko meklēt?</option>

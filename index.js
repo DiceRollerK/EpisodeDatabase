@@ -18,7 +18,7 @@ const __dirname = dirname(__filename);
 
 app.use(express.static(path.join(__dirname,'static')));
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+    console.log(`Saiti var atrast aizejot uz saiti: http://localhost:${port}`);
 });
 
 app.get('/', function(req, res) {
@@ -45,43 +45,64 @@ app.post('/search', (req, res) => {
             searchValue = 'Pier Pressure'
         }
     }
-
-    //console.log(`SELECT *, e.name AS ename FROM episode AS e, show AS s, story 
-    //    WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%' )` : ''} 
-    //    AND (ename LIKE '%${searchValue}%');`);
-
-    if (search_id == 0) {
-        res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s, story 
+    switch(search_id) {
+    case '0':
+        res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story 
         WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%')` : ''} 
         AND (ename LIKE '%${searchValue}%' OR s.name LIKE '%${searchValue}%' OR element1 LIKE '%${searchValue}%' OR element2 LIKE '%${searchValue}%' OR element3 LIKE '%${searchValue}%');`).all());
-    } else if (search_id == 1) {
-        res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s, story 
+        break;
+    case '1':
+        res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story 
         WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%' )` : ''} 
         AND (ename LIKE '%${searchValue}%');`).all());
-    } else if (search_id == 2) {
-        res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s, story 
+        break;
+    case '2':
+        res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story 
         WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%')` : ''} 
         AND (s.name LIKE '%${searchValue}%');`).all());
-    } else if (search_id == 3) {
-        res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s, story 
+        break;
+    case '3':
+        res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story 
         WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%')` : ''} 
         AND (element1 LIKE '%${searchValue}%' OR element2 LIKE '%${searchValue}%' OR element3 LIKE '%${searchValue}%');`).all());
-    } else if (search_id = -1) {
-        res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s, story, time, genre, theme
+        break;
+    case '-1':
+        res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story, time, genre, theme
         WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme)
         AND (show_id = ${showID}) ORDER BY season ASC, episode ASC;`).all());
+        break;
+    case '-2':
+        res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story, time, genre, theme
+        WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme)
+        AND (e.favourite = 1 OR s.favourite = 1);`).all());
+        break;
     }
-
 })
 
 app.get('/clicked', (req, res) => {
-    //let search = document.querySelector("#text-input").value
-    //console.log(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s WHERE s.show_id = e.id_show WHERE ename LIKE '%${search}%'`).all());
-    res.send(db.prepare(`SELECT *, e.name AS ename FROM episode AS e, show AS s, story WHERE (s.show_id = e.id_show) AND (story_id = id_story);`).all());
+    res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story WHERE (s.show_id = e.id_show) AND (story_id = id_story);`).all());
 });
 
 app.get('/show', (req, res) => {
     res.send(db.prepare(`SELECT * FROM show, time, genre, theme WHERE (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme)`).all());
+});
+
+app.post('/favourite', (req, res) => {
+    let f = req.query.favourite;
+    if (f == 1) {
+        f = 0;
+    } else {
+        f = 1;
+    }
+    let ep, show;
+    if (req.query.epid) {
+        ep = req.query.epid;
+        db.exec(`UPDATE episode SET favourite = ${f} WHERE episode_id = ${ep}`);
+    } else {
+        show = req.query.showid;
+        db.exec(`UPDATE show SET favourite = ${f} WHERE show_id = ${show}`);
+    }
+    res.send('throw');
 });
 
 import Database from 'better-sqlite3';

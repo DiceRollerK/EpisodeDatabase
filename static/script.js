@@ -1,8 +1,11 @@
 //import Database from "./database/nodejs-sqlite/index.mjs";
 //const db = new Database('EpisodeDatabase.db');
+let debug = true;
 
 
 document.getElementById("btn-all").addEventListener("click", () =>{
+    if(debug) console.log('1')
+
     fetch('/clicked', {method: 'GET'})
     .then(function(response) {
         if(response.ok) {
@@ -13,14 +16,67 @@ document.getElementById("btn-all").addEventListener("click", () =>{
     .then(function(data) {
         document.getElementById('output').innerHTML = "";
         document.getElementById('output').style.display = 'flex';
-        veidosana(data);
+        for (let i = 0; i < data.length; i++) {
+            veidosana(data, i);
+        }
     })
     .catch(function(error) {
         console.log(error);
     });
 })
 
-document.getElementById("btn").addEventListener("click", () => {
+document.getElementById("btn").addEventListener("click", search);
+document.getElementById("text-input").addEventListener("keydown", function(e) {
+    if(debug) console.log('2.1')
+
+    if (e.key === 'Enter') {
+        search();
+    }
+});
+
+document.getElementById('btn-favourites').addEventListener('click', () => {
+    if(debug) console.log('4');
+
+    fetch(`/search?searchID=-2`, {method: 'POST'})
+    .then(function(response) {
+        if(debug) console.log('5');
+
+        if(response.ok) {
+            return response.json();
+        } 
+        throw new Error('Request failed.');
+    })
+    .then(function(data) {
+        document.getElementById('output').innerHTML = "";
+
+        if (data[0] === undefined) {
+            neatrada();
+        } else {
+            document.getElementById('series').innerHTML = '';
+            let showids = [];
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].efavourite == 1) {
+                    veidosana(data, i);
+                } 
+            }
+            for (let i = 0; i < data.length; i++) {
+            if (data[i].favourite == 1) {
+                    if (!showids.includes(data[i].show_id)) {
+                        showids.push(data[i].show_id);
+                        serialaVeidosana(data, i);
+                    }
+                }
+            }
+        }
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+});
+
+function search() {
+    if(debug) console.log('2')
+
     let textValue = document.getElementById('text-input').value;
     if (textValue == '') textValue = 'Pier Pressure';
     let genre = document.getElementById('inputGroupSelect02').value;
@@ -35,39 +91,13 @@ document.getElementById("btn").addEventListener("click", () => {
     })
     .then(function(data) {
         document.getElementById('output').innerHTML = "";
-        document.getElementById('output').style.display = 'flex';
 
         if (data[0] === undefined) {
             neatrada();
         } else {
-            veidosana(data);
-        }
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-});
-
-function seriesEpisodes() {
-    let textValue = this.alt;
-    textValue = encodeURIComponent(textValue);
-
-   fetch(`/search?showid=${textValue}&searchID=-1`, {method: 'POST'})
-    .then(function(response) {
-        if(response.ok) {
-            return response.json();
-        } 
-        throw new Error('Request failed.');
-    })
-    .then(function(data) {
-        document.getElementById('output').innerHTML = "";
-        document.getElementById('output').style.display = 'flex';
-
-        if (data[0] === undefined) {
-            neatrada();
-        } else {
-            veidosana(data);
-            serialaVeidosana(data, 0);
+            for (let i = 0; i < data.length; i++) {
+            veidosana(data, i);
+            }
         }
     })
     .catch(function(error) {
@@ -75,7 +105,21 @@ function seriesEpisodes() {
     });
 }
 
-document.getElementById('btn-all-series').addEventListener('click', () => {
+function neatrada() {
+    document.getElementById('series').style.display = 'none';
+    document.getElementById('output').classList.add('bg-danger');
+    let div = document.createElement("div");
+    document.getElementById("output").appendChild(div);
+    div.classList.add('output-inside')
+    let text = document.createElement('p');
+    div.appendChild(text);
+    text.id = 'text-output'
+    text.innerHTML = `Nevarēju atrast!`
+}
+
+document.getElementById('btn-all-series').addEventListener('click', (allSeries))
+
+function allSeries() {
     fetch(`/show`, {method: 'GET'})
     .then(function(response) {
         if(response.ok) {
@@ -98,18 +142,6 @@ document.getElementById('btn-all-series').addEventListener('click', () => {
     .catch(function(error) {
         console.log(error);
     });
-});
-
-function neatrada() {
-    document.getElementById('series').style.display = 'none';
-    document.getElementById('output').classList.add('bg-danger');
-    let div = document.createElement("div");
-    document.getElementById("output").appendChild(div);
-    div.classList.add('output-inside')
-    let text = document.createElement('p');
-    div.appendChild(text);
-    text.id = 'text-output'
-    text.innerHTML = `Nevarēju atrast epizodi!`
 }
 
 function serialaVeidosana(data, i) {
@@ -118,8 +150,18 @@ function serialaVeidosana(data, i) {
     img.setAttribute('alt', `${data[i].name}`);
     img.classList.add('logo');
 
+    let star = document.createElement('p');
+    if(data[i].favourite == 1) {
+        star.classList.add('fas', 'fa-star','ms-1','mt-2','me-3','z-1','position-absolute');
+    } else {
+        star.classList.add('far', 'fa-star','ms-1','mt-2','me-3','z-1','position-absolute');
+    }
+    star.setAttribute('data-show', data[i].show_id);
+
     let div3 = document.createElement('div');
     div.appendChild(div3);
+
+    div3.appendChild(star)
 
     div3.classList.add('card', 'm-2', 'bg-success-subtle');
     div3.appendChild(img);
@@ -147,18 +189,61 @@ function serialaVeidosana(data, i) {
     `;
     div3.style.display = 'flex';
     div.style.display = 'flex';
+
+    star.addEventListener('click', (favourite));
     img.addEventListener("click", (seriesEpisodes));
 }
 
-function veidosana(data, serials) {
+function seriesEpisodes() {
+    if(debug) console.log('3')
+
+    let textValue = this.alt;
+    textValue = encodeURIComponent(textValue);
+
+   fetch(`/search?showid=${textValue}&searchID=-1`, {method: 'POST'})
+    .then(function(response) {
+        if(response.ok) {
+            return response.json();
+        }
+        throw new Error('Request failed.');
+    })
+    .then(function(data) {
+        document.getElementById('output').innerHTML = "";
+        document.getElementById('output').style.display = 'flex';
+
+        if (data[0] === undefined) {
+            neatrada();
+        } else {
+            for (let i = 0; i < data.length; i++) {
+            veidosana(data, i);
+            }
+            serialaVeidosana(data, 0);
+        }
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+}
+
+function veidosana(data, i) {
+    document.getElementById('output').style.display = 'flex';
     document.getElementById('series').innerHTML = '';
     document.getElementById('series').style.display = 'none';
     document.getElementById('output').classList.remove('bg-danger');
-    for (let i = 0; i < data.length; i++) {
+
+    let star = document.createElement('p');
+    if(data[i].efavourite == 1) {
+        star.classList.add('fas', 'fa-star','ms-1','mt-2','me-3','z-1','position-absolute');
+    } else {
+        star.classList.add('far', 'fa-star','ms-1','mt-2','me-3','z-1','position-absolute');
+    }
+    star.setAttribute('data-episode', data[i].episode_id);
 
     let div = document.createElement("div");
     document.getElementById("output").appendChild(div);
     div.classList.add('card', 'm-2')
+
+    div.appendChild(star);
 
     let img = document.createElement("img");
     img.setAttribute('alt', `${data[i].name}`)
@@ -187,11 +272,49 @@ function veidosana(data, serials) {
     Žanrs: ${data[i].genre}<br>
     Stāsta elementi: ${data[i].element1}${data[i].element2 != null ? ', '+data[i].element2.toLowerCase() : ''}${data[i].element3 != null ? ', '+data[i].element3.toLowerCase() : ''}
     `;
+    star.addEventListener('click', (favourite));
     img.addEventListener("click", (seriesEpisodes));
-    };
 }
 
-function resizePageMobile(){
+function favourite() {
+    let f;
+    if (this.classList.contains('fas')) {
+        f = 1;
+    } else {
+        f = 0;
+    }
+    this.classList.toggle('fas');
+    this.classList.toggle('far');
+    if(this.dataset.episode) {
+        fetch(`/favourite?favourite=${f}&epid=${this.dataset.episode}`, {method: 'POST'})
+            .then(function(response) {
+        if(response.ok) {
+            return;
+        }
+        throw new Error('Request failed.');
+        })
+        .then(function(data) {
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+    } else {
+        fetch(`/favourite?favourite=${f}&showid=${this.dataset.show}`, {method: 'POST'})
+            .then(function(response) {
+        if(response.ok) {
+            return;
+        }
+        throw new Error('Request failed.');
+        })
+        .then(function(data) {
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+    }
+}
+
+function smallScreen(){
     let a = document.getElementById('input-group');
 
     if (window.innerWidth <= 900) {
@@ -201,5 +324,7 @@ function resizePageMobile(){
     }
 
 }
-resizePageMobile();
-window.addEventListener('resize',resizePageMobile);
+smallScreen();
+window.addEventListener('resize', smallScreen);
+
+allSeries();

@@ -50,26 +50,28 @@ main {
     width: 30%;
 }
 
-/*
-.output-inside {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    background: #7c7;
-    margin-top: 1rem;
-    padding: 2rem;
+.fas.fa-star {
+    color: #ff0;
 }
-*/
+.far.fa-star {
+    color: #000;
+}
+.fa-star {
+    cursor: pointer;
+}
 
 .logo {
-    max-width: 16rem;
-    max-height: 9rem;
+    max-width: 12rem;
+    max-height: 7.2rem;
     align-self: center;
-    margin: 1rem;
+    margin: 1rem 1rem 1rem 2rem;
     cursor: pointer;
 }
 
 .output:empty{
+    display: none;
+}
+.output-container:empty {
     display: none;
 }
 
