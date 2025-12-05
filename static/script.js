@@ -7,8 +7,10 @@ let page = 0;
 
 document.getElementById("btn-all").addEventListener("click", () =>{
     if(debug) console.log('1')
+    let sortID = document.getElementById('inputGroupSelect03').value;
+    let dirID = document.getElementById('inputGroupSelect04').value;
 
-    fetch('/clicked', {method: 'GET'})
+    fetch(`/clicked?sortID=${sortID}&dirID=${dirID}`, {method: 'POST'})
     .then(function(response) {
         if(response.ok) {
             return response.json();
@@ -45,8 +47,10 @@ document.getElementById("text-input").addEventListener("keydown", function(e) {
 
 document.getElementById('btn-favourites').addEventListener('click', () => {
     if(debug) console.log('4');
+    let sortID = document.getElementById('inputGroupSelect03').value;
+    let dirID = document.getElementById('inputGroupSelect04').value;
 
-    fetch(`/search?searchID=-2`, {method: 'POST'})
+    fetch(`/search?searchID=-2&sortID=${sortID}&dirID=${dirID}`, {method: 'POST'})
     .then(function(response) {
         if(debug) console.log('5');
 
@@ -56,6 +60,7 @@ document.getElementById('btn-favourites').addEventListener('click', () => {
         throw new Error('Request failed.');
     })
     .then(function(data) {
+        outputData = [];
         document.getElementById('output').innerHTML = "";
         document.getElementById('series').innerHTML = '';
         document.getElementById('series').style.display = 'none';
@@ -102,8 +107,8 @@ document.getElementById('btn-favourites').addEventListener('click', () => {
                     }
                 }
             }
-            arrowCheck();
         }
+    arrowCheck();
     })
     .catch(function(error) {
         console.log(error);
@@ -118,8 +123,9 @@ function search() {
     let genre = document.getElementById('inputGroupSelect02').value;
     let searchID = document.getElementById('inputGroupSelect01').value;
     let sortID = document.getElementById('inputGroupSelect03').value;
+    let dirID = document.getElementById('inputGroupSelect04').value;
 
-   fetch(`/search?term=${textValue}${genre != "Žanrs" ? '&genre='+genre : ''}&searchID=${searchID}&sortID=${sortID}`, {method: 'POST'})
+   fetch(`/search?term=${textValue}${genre != "Žanrs" ? '&genre='+genre : ''}&searchID=${searchID}&sortID=${sortID}&dirID=${dirID}`, {method: 'POST'})
     .then(function(response) {
         if(response.ok) {
             return response.json();
