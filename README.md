@@ -1,8 +1,8 @@
 # Database
-Projekts ar datu bāzi
+Projekts ar datu bāzi, kura laikā es no nulles mācijos NodeJS, Express, SQLite
 
 # Kā izmantot saiti
-**Priekš saites ir vajadzīgs NodeJS**
+**Priekš saites ir vajadzīgs ieinstalēt NodeJS**
 
 Tad varat izmantot "start.bat" vai komandrindā galvenā projekta mapē uzrakstiet "npm start"
 

@@ -39,7 +39,6 @@ main {
     color: #666;
 }
 
-
 .output-container {
     display: none;
     flex-direction: row;
@@ -52,14 +51,14 @@ main {
 }
 
 .card {
-    width: 30%;
+    width: 31%;
 }
 
 .fas.fa-star {
-    color: #dd0;
+    color: #ee0;
 }
 .far.fa-star {
-    color: #000;
+    color: #aa0;
 }
 .fa-star {
     cursor: pointer;
@@ -71,6 +70,7 @@ main {
     align-self: center;
     margin: 1rem 1rem 1rem 2rem;
     cursor: pointer;
+    /* background-color: #ffffff70; */
 }
 
 .output:empty{
@@ -91,7 +91,6 @@ main {
 }
 
 @media (width < 750px) {
-
     .card {
     width: 90%;
     }

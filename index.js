@@ -23,12 +23,13 @@ app.listen(port, () => {
     console.log(`Saiti var atrast aizejot uz saiti: http://localhost:${port}`);
 });
 
+//Aplikācija izmanto HTML failu savai struktūrai
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+//Meklē informāciju SQL datu bāzē
 app.post('/search', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
     let search_id = req.query.searchID;
 
     let genre;
@@ -51,64 +52,84 @@ app.post('/search', (req, res) => {
         }
     }
     switch(search_id) {
-    case '0':
-        if (debug) console.log(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story 
-        WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%')` : ''} 
-        AND (ename LIKE '%${searchValue}%' OR s.name LIKE '%${searchValue}%' OR element1 LIKE '%${searchValue}%' OR element2 LIKE '%${searchValue}%' OR element3 LIKE '%${searchValue}%'
-        ) ${sort(parseInt(sortID, dirID))};`);
+        //sort() funkcija izmanto vērtības meklēšanas izvēlnēs un tikai ievada "ORDER BY" ja kaut atrod kādu vērtību
+        //Meklē visas vērtības
+        case '0':
+            if (debug) console.log(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story 
+            WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%')` : ''} 
+            AND (ename LIKE '%${searchValue}%' OR s.name LIKE '%${searchValue}%' OR element1 LIKE '%${searchValue}%' OR element2 LIKE '%${searchValue}%' OR element3 LIKE '%${searchValue}%'
+            ) ${sort(parseInt(sortID, dirID))};`);
 
-        res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story 
-        WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%')` : ''} 
-        AND (ename LIKE '%${searchValue}%' OR s.name LIKE '%${searchValue}%' OR element1 LIKE '%${searchValue}%' OR element2 LIKE '%${searchValue}%' OR element3 LIKE '%${searchValue}%') 
-        ${sort(parseInt(sortID), parseInt(dirID))};`).all());
+            res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story 
+            WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%')` : ''} 
+            AND (ename LIKE '%${searchValue}%' OR s.name LIKE '%${searchValue}%' OR element1 LIKE '%${searchValue}%' OR element2 LIKE '%${searchValue}%' OR element3 LIKE '%${searchValue}%') 
+            ${sort(parseInt(sortID), parseInt(dirID))};`).all());
         break;
-    case '1':
-        res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story 
-        WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%' )` : ''} 
-        AND (ename LIKE '%${searchValue}%') 
-        ${sort(parseInt(sortID), parseInt(dirID))};`).all());
+        //Meklē tikai epizožu nosaukums
+        case '1':
+            res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story 
+            WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%' )` : ''} 
+            AND (ename LIKE '%${searchValue}%') 
+            ${sort(parseInt(sortID), parseInt(dirID))};`).all());
         break;
-    case '2':
-        res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story 
-        WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%')` : ''} 
-        AND (s.name LIKE '%${searchValue}%') 
-        ${sort(parseInt(sortID), parseInt(dirID))};`).all());
+        //Meklē tikai seriālu nosaukumus
+        case '2':
+            res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story 
+            WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%')` : ''} 
+            AND (s.name LIKE '%${searchValue}%') 
+            ${sort(parseInt(sortID), parseInt(dirID))};`).all());
         break;
-    case '3':
-        res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story 
-        WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%')` : ''} 
-        AND (element1 LIKE '%${searchValue}%' OR element2 LIKE '%${searchValue}%' OR element3 LIKE '%${searchValue}%')
-        ${sort(parseInt(sortID), parseInt(dirID))};`).all());
+        //Meklē tikai epizodes stāsta elementus
+        case '3':
+            res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story 
+            WHERE (s.show_id = e.id_show) AND (story_id = id_story)${genre ? ` AND (genre LIKE '%${genre}%')` : ''} 
+            AND (element1 LIKE '%${searchValue}%' OR element2 LIKE '%${searchValue}%' OR element3 LIKE '%${searchValue}%')
+            ${sort(parseInt(sortID), parseInt(dirID))};`).all());
         break;
-    case '-1':
-        res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story, time, genre, theme
-        WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme)
-        AND (show_id = ${showID}) ORDER BY season ASC, episode ASC;`).all());
+        //Meklē visas epizodes no kāda seriāla
+        case '-1':
+            res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story, time, genre, theme
+            WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme)
+            AND (show_id = ${showID}) ORDER BY season ASC, episode ASC;`).all());
         break;
-    case '-2':
-        res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story, time, genre, theme
-        WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme)
-        AND (e.favourite = 1 OR s.favourite = 1)
-        ${sort(parseInt(sortID), parseInt(dirID))};`).all());
+        //Meklē seriālus un epizodes atzīmētas ar 'mīļots'
+        case '-2':
+            if (debug) console.log(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story, time, genre, theme
+            WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme)
+            AND (e.favourite = 1 OR s.favourite = 1)
+            ${sort(parseInt(sortID), parseInt(dirID))};`).all());
+
+            res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story, time, genre, theme
+            WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme)
+            AND (e.favourite = 1 OR s.favourite = 1)
+            ${sort(parseInt(sortID), parseInt(dirID))};`).all());
         break;
     }
 })
 
+//Izmanto kārtošanas izvēlni lai saprast kā kārtot
+//dirID izvēlās kārtošanas virzienu, 0 ir augstoši, 1 ir dilstoši
 function sort(sortid, dirID) {
     switch (sortid) {
+        //Nekārto
         case 0:
             return ' ';
+        //Kārto pēc seriāla nosaukuma
         case 1:
             return `ORDER BY s.name ${(dirID == 0 ? 'ASC': 'DESC')}`;
+        //Kārto pēc epizodes nosaukuma
         case 2:
             return `ORDER BY e.name ${(dirID == 0 ? 'ASC': 'DESC')}`;
+        //Kārto pēc raidīšanas datuma
         case 3:
             return `ORDER BY date ${(dirID == 0 ? 'ASC': 'DESC')}`;
+        //Kārto pēc sezonas un epizodes
         case 4:
             return `ORDER BY season ${(dirID == 0 ? 'ASC': 'DESC')}, episode ${(dirID == 0 ? 'ASC': 'DESC')}`;
     }
 }
 
+//Meklē visas epizodes datu bāzē
 app.post('/clicked', (req, res) => {
     let sortID = req.query.sortID;
     let dirID = req.query.dirID;  
@@ -116,18 +137,22 @@ app.post('/clicked', (req, res) => {
     ${sort(parseInt(sortID), parseInt(dirID))};`).all());
 });
 
+//Meklē visus seriālus datu bāzē
 app.get('/show', (req, res) => {
     res.send(db.prepare(`SELECT * FROM show, time, genre, theme WHERE (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme)`).all());
 });
 
+//Maina epizodu vai seriālu 'favourite' vērtību
 app.post('/favourite', (req, res) => {
     let f = req.query.favourite;
+    //Ja bija mīļots tad paliek nemīļots un otrādi
     if (f == 1) {
         f = 0;
     } else {
         f = 1;
     }
     let ep, show;
+    //Pārbauda vai epizodes vai seriāla informācija tiek mainīta
     if (req.query.epid) {
         ep = req.query.epid;
         db.exec(`UPDATE episode SET favourite = ${f} WHERE episode_id = ${ep}`);
