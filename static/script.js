@@ -383,7 +383,6 @@ function favourite() {
             }
         }
     }
-    console.log(outputData);
     this.classList.toggle('fas');
     this.classList.toggle('far');
     if(this.dataset.episode) {
