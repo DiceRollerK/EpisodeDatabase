@@ -15,16 +15,12 @@ body {
     background-attachment: fixed;
 }
 
-header {
-    background-color: #FF7849;
-    box-shadow: 0 .1rem 5px #000;
-}
-
 main {
     margin: auto;
     width: 75%;
     font-size: 2.5rem;
 }
+
 
 .meklet {
     display: flex;
@@ -70,7 +66,8 @@ main {
     align-self: center;
     margin: 1rem 1rem 1rem 2rem;
     cursor: pointer;
-    /* background-color: #ffffff70; */
+    border-radius: .2rem;
+    background-color: #00000010;
 }
 
 .output:empty{

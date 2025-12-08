@@ -239,6 +239,11 @@ function serialaVeidosana(data, i) {
     //Alt vērtība ir vēlāk izmantota lai atpazīt kuram seriālam pieder bilde
     img.setAttribute('alt', `${data[i].name}`);
     img.classList.add('logo');
+    if (darkmode(1)) {
+        img.style.backgroundColor = '#00000010';
+    } else {
+        img.style.backgroundColor = '#ffffff90';
+    }
 
     //Zvaigzne kas atzīmē mīļotos seriālus
     let star = document.createElement('p');
@@ -364,6 +369,11 @@ function veidosana(data, i) {
     img.setAttribute('alt', `${data[i].name}`)
     img.classList.add('logo');
     div.appendChild(img);
+    if (darkmode(1)) {
+        img.style.backgroundColor = '#00000010';
+    } else {
+        img.style.backgroundColor = '#ffffff90';
+    }
 
     //Kartes noformējums
     let div2  = document.createElement("div");
@@ -466,36 +476,6 @@ function favourite() {
     }
 }
 
-//Maina meklēšanas elementus lai tie būtu labāk redzami uz maziem un telefona ekrāniem
-function smallScreen(){
-    let a = document.getElementById('input-group');
-    let a2 = document.getElementById('input-group2');
-
-    //input-group-sm ir mazāka versija input-group stila klasei
-    if (window.innerWidth <= 900) {
-        a.classList.add('input-group-sm');
-        a2.classList.add('input-group-sm');
-    }else{ 
-        a.classList.remove('input-group-sm');
-        a2.classList.remove('input-group-sm');
-    }
-
-    //Maina izveļņu izvadi kolonnās, jo tā paliek iespējams tos spiest
-    if(window.innerWidth <= 600) {
-        a2.classList.remove('input-group');
-        a2.classList.remove('input-group-sm');
-        a2.classList.add('d-flex')
-        a2.classList.add('flex-column')
-    } else {
-        a2.classList.add('input-group');
-        a2.classList.remove('d-flex')
-        a2.classList.remove('flex-column');
-    }
-}
-smallScreen();
-//Kad mainās ekrāna izmērs, sākās ekrāna lieluma maiņas funkcija
-window.addEventListener('resize', smallScreen);
-
 //Pārbauda vai bultiņām jāizskatās uzspiežamām
 function arrowCheck() {
     //Nulletajā lapā kreisā bultiņa nekad neizskatīsies spiežama, bet citās lapās vislai izskatīsies spiežama
@@ -569,3 +549,64 @@ function pageChange(virz) {
 }
 //Uzreiz izvad visus seriālus datu bāzē
 allSeries();
+
+//Maina meklēšanas elementus lai tie būtu labāk redzami uz maziem un telefona ekrāniem
+function smallScreen(){
+    let a = document.getElementById('input-group');
+    let a2 = document.getElementById('input-group2');
+
+    //input-group-sm ir mazāka versija input-group stila klasei
+    if (window.innerWidth <= 900) {
+        a.classList.add('input-group-sm');
+        a2.classList.add('input-group-sm');
+    }else{ 
+        a.classList.remove('input-group-sm');
+        a2.classList.remove('input-group-sm');
+    }
+
+    //Maina izveļņu izvadi kolonnās, jo tā paliek iespējams tos spiest
+    if(window.innerWidth <= 600) {
+        a2.classList.remove('input-group');
+        a2.classList.remove('input-group-sm');
+        a2.classList.add('d-flex')
+        a2.classList.add('flex-column')
+    } else {
+        a2.classList.add('input-group');
+        a2.classList.remove('d-flex')
+        a2.classList.remove('flex-column');
+    }
+}
+smallScreen();
+//Kad mainās ekrāna izmērs, sākās ekrāna lieluma maiņas funkcija
+window.addEventListener('resize', smallScreen);
+
+function darkmode(reas) {
+    //Maina tumšo un gaišo režīmu
+    let dark = (document.getElementById('darkmode').dataset.dark == "0")
+    if (reas == '0') {
+        if (dark) {
+            document.getElementById('darkmode').innerHTML = 'Gaišais režīms';
+            document.getElementById('darkmode').dataset.dark = '1';
+            document.getElementById('html').setAttribute('data-bs-theme','dark'); 
+            document.getElementById('navbar').style.backgroundColor = '#863707';
+            document.getElementById('body').style.backgroundColor = '#0d6efd';
+            for (let i = 0; i < document.getElementsByClassName('logo').length; i++) {
+                document.getElementsByClassName('logo')[i].style.background = '#ffffff90';
+            }
+        } else {
+            document.getElementById('darkmode').innerHTML = 'Tumšais režīms'
+            document.getElementById('darkmode').dataset.dark = '0';
+            document.getElementById('html').removeAttribute('data-bs-theme','dark');
+            document.getElementById('navbar').style.backgroundColor = '#fd7e14';
+            document.getElementById('body').style.backgroundColor = '#0dcaf0';
+            for (let i = 0; i < document.getElementsByClassName('logo').length; i++) {
+                document.getElementsByClassName('logo')[i].style.background = '#00000010';
+            }
+        }
+    //Pārbauda vai tagad ir gaišais vai tumšais režīms
+    } else if (reas == '1') {
+        return (dark); //true = tumšais režīms, false = gaišais režīms
+    }
+}
+
+darkmode(0);
