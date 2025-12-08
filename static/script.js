@@ -61,6 +61,7 @@ document.getElementById('btn-favourites').addEventListener('click', () => {
     })
     .then(function(data) {
         outputData = [];
+        document.getElementById('output').style.display = 'none';
         document.getElementById('output').innerHTML = "";
         document.getElementById('series').innerHTML = '';
         document.getElementById('series').style.display = 'none';
@@ -348,9 +349,41 @@ function favourite() {
     let f;
     if (this.classList.contains('fas')) {
         f = 1;
+        if (this.dataset.episode) {
+            if (debug) console.log('ep fav 0');
+            for (let i in outputData) {
+                if (outputData[i].episode_id == this.dataset.episode) {
+                    outputData[i].efavourite = 0;
+                }
+            }
+        } else {
+            if (debug) console.log('show fav 0');
+            for (let i in outputData) {
+                if (outputData[i].show_id == this.dataset.episode) {
+                    outputData[i].favourite = 0;
+                }
+            }
+        }
     } else {
         f = 0;
+        if (this.dataset.episode) {
+            if (debug) console.log('ep fav 1');
+            for (let i in outputData) {
+                if (outputData[i].episode_id == this.dataset.episode) {
+                    outputData[i].efavourite = 1;
+                }
+            }
+        } else {
+            if (debug) console.log('show fav 1');
+            for (let i in outputData) {
+                if (outputData[i].show_id == this.dataset.episode) {
+                    outputData[i].favourite = 1;
+                    break;
+                }
+            }
+        }
     }
+    console.log(outputData);
     this.classList.toggle('fas');
     this.classList.toggle('far');
     if(this.dataset.episode) {
