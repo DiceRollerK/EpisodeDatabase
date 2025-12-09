@@ -1,5 +1,5 @@
 //Ja vērtība ir 'true' tad būs izvadītas dažādas atkļūdošanas vērtības
-let debug = true;
+let debug = false;
 //outputData saglabā datus, kurus var izmantot visā dokumentā, tas tiek izmantots lapas maiņas funkcijā
 let outputData
 //saglabā kura lapa ir izvadīta, sākot ar 0
@@ -590,7 +590,9 @@ function darkmode(reas) {
             document.getElementById('darkmode').dataset.dark = '1';
             document.getElementById('html').setAttribute('data-bs-theme','dark'); 
             document.getElementById('navbar').style.backgroundColor = '#863707';
-            document.getElementById('body').style.backgroundColor = '#0d6efd';
+            document.getElementById('body').style.backgroundColor = '#066efd';
+            document.getElementById('series').style.backgroundColor = '#363'
+            document.getElementById('output').style.backgroundColor = '#363'
             for (let i = 0; i < document.getElementsByClassName('logo').length; i++) {
                 document.getElementsByClassName('logo')[i].style.background = '#ffffff90';
             }
@@ -600,6 +602,8 @@ function darkmode(reas) {
             document.getElementById('html').removeAttribute('data-bs-theme','dark');
             document.getElementById('navbar').style.backgroundColor = '#fd7e14';
             document.getElementById('body').style.backgroundColor = '#0dcaf0';
+            document.getElementById('series').style.backgroundColor = '#7c7'
+            document.getElementById('output').style.backgroundColor = '#7c7'
             for (let i = 0; i < document.getElementsByClassName('logo').length; i++) {
                 document.getElementsByClassName('logo')[i].style.background = '#00000010';
             }
