@@ -5,12 +5,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Epizodu datu bāze</title>
         <link rel="stylesheet" href="style.css">
+        <!-- Šrifts -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/open-dyslexic-regular.min.css">
+
         <script src="script.js" defer></script>
+        <!-- Bootstrap -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <!-- Font-awesome ikonas -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     </head>
-    <body id="body">
+    <body class="helvetica" id="body">
         <!-- Parādīsies uzspiezot uz iestatījumu pogas -->
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -28,6 +33,18 @@
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="#" onclick="tumsaisRezims(false)">Gaišais režīms</a></li>
                                 <li><a class="dropdown-item" href="#" onclick="tumsaisRezims(true)">Tumšais režīms</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Šrifts
+                        </button>
+                        <div>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item helvetica" href="#" onclick="sriftaMaina('helvetica')">Helvetica</a></li>
+                                <li><a class="dropdown-item comic-sans" href="#" onclick="sriftaMaina('comic-sans')">Comic Sans MS</a></li>
+                                <li><a class="dropdown-item openDyslexic" href="#" onclick="sriftaMaina('openDyslexic')">OpenDyslexic</a></li>
                             </ul>
                         </div>
                     </div>

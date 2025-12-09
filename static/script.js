@@ -15,7 +15,6 @@ document.getElementById("poga-visi-epizodes").addEventListener("click", () =>{
     let virzID = document.getElementById('ievadaGrupasIzvele04').value;
 
     let zanrs = document.getElementById('ievadaGrupasIzvele02').value;
-    console.log(document.getElementById('ievadaGrupasIzvele02').value);
 
     //Aizsūt pieprasījumu uz adresi clicked, kas izvada visas epizodes
     //kartosanasID pasaka kā vērtības tiek kārtotas 
@@ -38,7 +37,6 @@ document.getElementById("poga-visi-epizodes").addEventListener("click", () =>{
         document.getElementById('epizozuIzvade').innerHTML = "";
         document.getElementById('epizozuIzvade').style.display = 'flex';
         //Izvada tikai pirmās 6 vērtības, jo tik daudz ir vienā lapā
-        console.log(data);
         if (data.length > 6) {
             for (let i = 0; i < 6; i++) {
                 epizodesVeidosana(data, i);
@@ -630,3 +628,13 @@ function tumsaisRezims(krasa) {
     //Pārbauda vai tagad ir gaišais vai tumšais režīms
 }
 tumsaisRezims(false);
+
+function sriftaMaina(srifts) {
+    body = document.getElementById('body');
+    if (srifts == 'Helvetica') {
+        body.className = '';
+    } else {
+        body.className = '';
+        body.classList.add(srifts);
+    }
+}

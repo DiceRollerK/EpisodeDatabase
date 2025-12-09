@@ -178,10 +178,6 @@ app.post('/clicked', (req, res) => {
     let virzID = req.query.virzID;  
     let zanrs;
     if (req.query.zanrs) zanrs = req.query.zanrs;
-    console.log(req.query.zanrs);
-    console.log(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story WHERE (s.show_id = e.id_show) AND (story_id = id_story)
-    ${zanrs ? ` AND (genre LIKE '%${zanrs}%')` : ''}
-    ${kartot(parseInt(kartosanasID), parseInt(virzID), true)};`).all());
 
     res.send(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story WHERE (s.show_id = e.id_show) AND (story_id = id_story)
     ${zanrs ? ` AND (genre LIKE '%${zanrs}%')` : ''}

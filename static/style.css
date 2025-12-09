@@ -1,7 +1,18 @@
 * {
     /*transition: all .3s linear;*/
     box-sizing: border-box;
+}
+
+.helvetica {
     font-family: Helvetica;
+}
+
+.comic-sans {
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+}
+
+.openDyslexic {
+    font-family: "OpenDyslexicRegular", "Comic Sans MS", "Comic Sans";
 }
 
 html {
@@ -13,6 +24,7 @@ body {
     margin: 0;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    
 }
 
 main {
