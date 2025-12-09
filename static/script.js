@@ -1,5 +1,5 @@
 //Ja vērtība ir 'true' tad būs izvadītas dažādas atkļūdošanas vērtības
-let debug = false;
+let debug = true;
 //outputData saglabā datus, kurus var izmantot visā dokumentā, tas tiek izmantots lapas maiņas funkcijā
 let outputData
 //saglabā kura lapa ir izvadīta, sākot ar 0
@@ -159,6 +159,7 @@ function search() {
             neatrada();
         } else {
             outputData = data;
+            if(debug) console.log(data);
             page = 0;
             if (data.length > 6) {
                 for (let i = 0; i < 6; i++) {
