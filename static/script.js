@@ -1,22 +1,26 @@
 //Ja vērtība ir 'true' tad būs izvadītas dažādas atkļūdošanas vērtības
 let debug = false;
-//outputData saglabā datus, kurus var izmantot visā dokumentā, tas tiek izmantots lapas maiņas funkcijā
-let outputData
+//izvadesDati saglabā datus, kurus var izmantot visā dokumentā, tas tiek izmantots lapas maiņas funkcijā
+let izvadesDati
 //saglabā kura lapa ir izvadīta, sākot ar 0
-let page = 0;
+let lapa = 0;
+let tumss = false;
 
 //Izvada visas epizodes kas ir datu bāzē
-document.getElementById("btn-all").addEventListener("click", () =>{
+document.getElementById("poga-visi-epizodes").addEventListener("click", () =>{
     if(debug) console.log('1')
-    //Saņem vērtību sortID no izvēlnes 'Pēc kā kārtot'
-    let sortID = document.getElementById('inputGroupSelect03').value;
+    //Saņem vērtību kartosanasID no izvēlnes 'Pēc kā kārtot'
+    let kartosanasID = document.getElementById('ievadaGrupasIzvele03').value;
     //Saņem vērtību no izvēlnes ar bultiņu, vērtība var būt 0 vai 1
-    let dirID = document.getElementById('inputGroupSelect04').value;
+    let virzID = document.getElementById('ievadaGrupasIzvele04').value;
+
+    let zanrs = document.getElementById('ievadaGrupasIzvele02').value;
+    console.log(document.getElementById('ievadaGrupasIzvele02').value);
 
     //Aizsūt pieprasījumu uz adresi clicked, kas izvada visas epizodes
-    //sortID pasaka kā vērtības tiek kārtotas 
-    //dirID saka vai vērtības būt kārtotas dilstoši vai augoši
-    fetch(`/clicked?sortID=${sortID}&dirID=${dirID}`, {method: 'POST'})
+    //kartosanasID pasaka kā vērtības tiek kārtotas 
+    //virzID saka vai vērtības būt kārtotas dilstoši vai augoši
+    fetch(`/clicked?kartosanasID=${kartosanasID}&virzID=${virzID}${zanrs != "Žanrs" ? '&zanrs='+zanrs : ''}`, {method: 'POST'})
     .then(function(response) {
         if(response.ok) {
             return response.json();
@@ -25,22 +29,27 @@ document.getElementById("btn-all").addEventListener("click", () =>{
     })
     .then(function(data) {
         //Paslēpj kasti ar seriāliem jo tie nebūs izvadīti
-        document.getElementById('series').innerHTML = '';
-        document.getElementById('series').style.display = 'none';
-        //Ievieto vērtības outputData masīvā, lai tās vērtības varētu vēlāk izmantot lapu maiņas funkcija
-        outputData = data;
-        page = 0;
+        document.getElementById('serialuIzvade').innerHTML = '';
+        document.getElementById('serialuIzvade').style.display = 'none';
+        //Ievieto vērtības izvadesDati masīvā, lai tās vērtības varētu vēlāk izmantot lapu maiņas funkcija
+        izvadesDati = data;
+        lapa = 0;
         //Izdzēš iepriekšējās vērtības kastē ar epizodēm un padara to redzamu
-        document.getElementById('output').innerHTML = "";
-        document.getElementById('output').style.display = 'flex';
+        document.getElementById('epizozuIzvade').innerHTML = "";
+        document.getElementById('epizozuIzvade').style.display = 'flex';
         //Izvada tikai pirmās 6 vērtības, jo tik daudz ir vienā lapā
-        if (data.length > (((page+1)*6))) {
-            for (let i = page*6; i < (page+1)*6; i++) {
-                veidosana(data, i);
+        console.log(data);
+        if (data.length > 6) {
+            for (let i = 0; i < 6; i++) {
+                epizodesVeidosana(data, i);
+            }
+        } else {
+            for (let i = 0; i < data.length; i++) {
+                epizodesVeidosana(data, i);
             }
         }
         //Pārbauda vai bultiņām jāizskatās uzspiežamām
-        arrowCheck();
+        bultuParbauds();
     })
     .catch(function(error) {
         console.log(error);
@@ -48,20 +57,20 @@ document.getElementById("btn-all").addEventListener("click", () =>{
 })
 
 //Atļauj meklēt uzspiežot gan meklēšanas pogu, gan uzspiežot uz klaviatūras 'enter'
-document.getElementById("btn").addEventListener("click", search);
-document.getElementById("text-input").addEventListener("keydown", function(e) {
+document.getElementById("poga-meklet").addEventListener("click", meklet);
+document.getElementById("teksta-ievade").addEventListener("keydown", function(e) {
     if (e.key === 'Enter') {
-        search();
+        meklet();
     }
 });
 
 //Izvada visas epizodes un seriālus kurus lietotājs ir atzīmējis kā "mīļotus"
-document.getElementById('btn-favourites').addEventListener('click', () => {
+document.getElementById('poga-iecienitie').addEventListener('click', () => {
     if(debug) console.log('4');
-    let sortID = document.getElementById('inputGroupSelect03').value;
-    let dirID = document.getElementById('inputGroupSelect04').value;
+    let kartosanasID = document.getElementById('ievadaGrupasIzvele03').value;
+    let virzID = document.getElementById('ievadaGrupasIzvele04').value;
 
-    fetch(`/search?searchID=-2&sortID=${sortID}&dirID=${dirID}`, {method: 'POST'})
+    fetch(`/meklet?meklesanasID=-2&kartosanasID=${kartosanasID}&virzID=${virzID}`, {method: 'POST'})
     .then(function(response) {
         if(debug) console.log('5');
 
@@ -71,59 +80,59 @@ document.getElementById('btn-favourites').addEventListener('click', () => {
         throw new Error('Request failed.');
     })
     .then(function(data) {
-        outputData = [];
+        izvadesDati = [];
         //Paslēpj un idzēš vērtības kastē ar seriāliem un kastē ar epizodēm jo tie būs atklāti kad veidoti
-        document.getElementById('output').style.display = 'none';
-        document.getElementById('output').innerHTML = "";
-        document.getElementById('series').innerHTML = '';
-        document.getElementById('series').style.display = 'none';
+        document.getElementById('epizozuIzvade').style.display = 'none';
+        document.getElementById('epizozuIzvade').innerHTML = "";
+        document.getElementById('serialuIzvade').innerHTML = '';   
+        document.getElementById('serialuIzvade').style.display = 'none';
 
         //Pārbauda vai datu masīvā vispār ir vērtības
         if (data[0] === undefined) {
             neatrada();
         } else {
-            let series = [];
-            let episodes = [];
+            let seriali = [];
+            let epizodes = [];
             for (let i = 0; i < data.length; i++) {
                 if (data[i].efavourite == 1) {
-                    episodes.push(data[i]);
+                    epizodes.push(data[i]);
                 }
                 if (data[i].favourite == 1) {
-                    document.getElementById('series').style.display = 'flex';
-                    series.push(data[i]);
+                    document.getElementById('serialuIzvade').style.display = 'flex';
+                    seriali.push(data[i]);
                 }
             }
-            outputData = episodes;
-            page = 0;
-            document.getElementById('series').innerHTML = '';
-            let showids = [];
-            if (episodes.length > 6) {
+            izvadesDati = epizodes;
+            lapa = 0;
+            document.getElementById('serialuIzvade').innerHTML = '';
+            let serialuIDs = [];
+            if (epizodes.length > 6) {
                 for (let i = 0; i < 6; i++) {
-                    veidosana(episodes, i);
+                    epizodesVeidosana(epizodes, i);
                 }
             } else {
-                for (let i = 0; i < episodes.length; i++) {
-                    veidosana(episodes, i);
+                for (let i = 0; i < epizodes.length; i++) {
+                    epizodesVeidosana(epizodes, i);
                 }
             }
-            if (series.length > 6) {
-                for (let i = 0; i < series.length; i++) {
-                    if (!showids.includes(series[i].show_id)) {
-                        showids.push(series[i].show_id);
-                        serialaVeidosana(series, i);
+            if (seriali.length > 6) {
+                for (let i = 0; i < seriali.length; i++) {
+                    if (!serialuIDs.includes(seriali[i].show_id)) {
+                        serialuIDs.push(seriali[i].show_id);
+                        serialaVeidosana(seriali, i);
                     }
                 }
             } else {
-                for (let i = 0; i < series.length; i++) {
-                    if (!showids.includes(series[i].show_id)) {
-                        showids.push(series[i].show_id);
-                        serialaVeidosana(series, i);
+                for (let i = 0; i < seriali.length; i++) {
+                    if (!serialuIDs.includes(seriali[i].show_id)) {
+                        serialuIDs.push(seriali[i].show_id);
+                        serialaVeidosana(seriali, i);
                     }
                 }
             }
         }
         //Pārbauda vai bultiņām jāizskatās uzspiežamām
-    arrowCheck();
+    bultuParbauds();
     })
     .catch(function(error) {
         console.log(error);
@@ -131,17 +140,17 @@ document.getElementById('btn-favourites').addEventListener('click', () => {
 });
 
 //Meklēšanas funkcija
-function search() {
+function meklet() {
     if(debug) console.log('2')
 
-    let textValue = document.getElementById('text-input').value;
-    if (textValue == '') textValue = 'Pier Pressure';
-    let genre = document.getElementById('inputGroupSelect02').value;
-    let searchID = document.getElementById('inputGroupSelect01').value;
-    let sortID = document.getElementById('inputGroupSelect03').value;
-    let dirID = document.getElementById('inputGroupSelect04').value;
+    let tekstaVertiba = document.getElementById('teksta-ievade').value;
+    if (tekstaVertiba == '') tekstaVertiba = 'Pier Pressure';
+    let zanrs = document.getElementById('ievadaGrupasIzvele02').value;
+    let meklesanasID = document.getElementById('ievadaGrupasIzvele01').value;
+    let kartosanasID = document.getElementById('ievadaGrupasIzvele03').value;
+    let virzID = document.getElementById('ievadaGrupasIzvele04').value;
 
-   fetch(`/search?term=${textValue}${genre != "Žanrs" ? '&genre='+genre : ''}&searchID=${searchID}&sortID=${sortID}&dirID=${dirID}`, {method: 'POST'})
+   fetch(`/meklet?ievaditais=${tekstaVertiba}${zanrs != "Žanrs" ? '&zanrs='+zanrs : ''}&meklesanasID=${meklesanasID}&kartosanasID=${kartosanasID}&virzID=${virzID}`, {method: 'POST'})
     .then(function(response) {
         if(response.ok) {
             return response.json();
@@ -150,28 +159,28 @@ function search() {
     })
     .then(function(data) {
         //Paslēpj un idzēš vērtības kastē ar seriāliem, jo tos nevar atrast un izdzēš vērtības kastē ar epizodēm, lai tie netraucētu
-        document.getElementById('output').innerHTML = "";
-        document.getElementById('series').innerHTML = '';
-        document.getElementById('series').style.display = 'none';
+        document.getElementById('epizozuIzvade').innerHTML = "";
+        document.getElementById('serialuIzvade').innerHTML = '';
+        document.getElementById('serialuIzvade').style.display = 'none';
 
         //Pārbauda vai datu masīvā vispār ir vērtības
         if (data[0] === undefined) {
             neatrada();
         } else {
-            outputData = data;
+            izvadesDati = data;
             if(debug) console.log(data);
-            page = 0;
+            lapa = 0;
             if (data.length > 6) {
                 for (let i = 0; i < 6; i++) {
-                    veidosana(data, i);
+                    epizodesVeidosana(data, i);
                 }
             } else {
                 for (let i = 0; i < data.length; i++) {
-                    veidosana(data, i);
+                    epizodesVeidosana(data, i);
                 }
             }
             //Pārbauda vai bultiņām jāizskatās uzspiežamām
-            arrowCheck();
+            bultuParbauds();
         }
     })
     .catch(function(error) {
@@ -182,25 +191,25 @@ function search() {
 //Izvada kļūdu ja nevarēja atrast jebkādu epizodi datu bāzē
 function neatrada() {
     //Paslēpj un idzēš vērtības kastē ar seriāliem jo tos neizvad
-    document.getElementById('series').style.display = 'none';
-    document.getElementById('output').style.display = 'flex';
+    document.getElementById('serialuIzvade').style.display = 'none';
+    document.getElementById('epizozuIzvade').style.display = 'flex';
     //Iedod klasi kas krāso fonu kastei sarkanu, kas nozīmē kļūda
-    document.getElementById('output').classList.add('bg-danger');
+    document.getElementById('epizozuIzvade').classList.add('bg-danger');
     //teksta kaste
     let div = document.createElement("div");
-    document.getElementById("output").appendChild(div);
+    document.getElementById("epizozuIzvade").appendChild(div);
     div.classList.add('output-inside')
     //teksts
     let text = document.createElement('p');
     div.appendChild(text);
-    text.id = 'text-output'
+    //text.id = 'teksta-izvade'
     text.innerHTML = `Nevarēju atrast!`
 }
 
 //Izvada visus seriālus kas ir datu bāzē
-document.getElementById('btn-all-series').addEventListener('click', (allSeries))
-function allSeries() {
-    fetch(`/show`, {method: 'GET'})
+document.getElementById('poga-visi-seriali').addEventListener('click', (visiSeriali))
+function visiSeriali() {
+    fetch(`/seriali`, {method: 'GET'})
     .then(function(response) {
         if(response.ok) {
             return response.json();
@@ -208,24 +217,72 @@ function allSeries() {
         throw new Error('Request failed.');
     })
     .then(function(data) {
-        //outputData tiek iztīrīts, jo mainīt lapas nav iespējams pēc šīs funkcijas
-        outputData = [];
-        page = 0;
+        //izvadesDati tiek iztīrīts, jo mainīt lapas nav iespējams pēc šīs funkcijas
+        izvadesDati = [];
+        lapa = 0;
         //Paslēpj un idzēš vērtības kastē ar epizodēm jo tie nebūs izvadīti
-        document.getElementById('output').innerHTML = "";
-        document.getElementById('output').style.display = 'none';
+        document.getElementById('epizozuIzvade').innerHTML = "";
+        document.getElementById('epizozuIzvade').style.display = 'none';
 
         //Pārbauda vai datu masīvā vispār ir vērtības
         if (data[0] === undefined) {
             neatrada();
         } else {
-            document.getElementById('series').innerHTML = '';
+            document.getElementById('serialuIzvade').innerHTML = '';
             for (let i = 0; i < data.length; i++) {
                 serialaVeidosana(data, i);
             }
         }
         //Pārbauda vai bultiņām jāizskatās uzspiežamām
-        arrowCheck();
+        bultuParbauds();
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+}
+
+//Izvada visas epizodes kas ir seriālam uz kura uzspiež
+function serialaEpizodes() {
+    if(debug) console.log('3')
+
+    let tekstaVertiba = this.alt;
+    //Seriālam 'Love, Death & Robots' bija kļūda, kas tika izlabota šifrējot to vērtību izmantojot šo funkciju
+    tekstaVertiba = encodeURIComponent(tekstaVertiba);
+
+   fetch(`/meklet?serialaID=${tekstaVertiba}&meklesanasID=-1`, {method: 'POST'})
+    .then(function(response) {
+        if(response.ok) {
+            return response.json();
+        }
+        throw new Error('Request failed.');
+    })
+    .then(function(data) {
+        //Izdzēš iepriekšējās vērtības lai tās netraucētu
+        document.getElementById('epizozuIzvade').innerHTML = "";
+        document.getElementById('serialuIzvade').innerHTML = '';
+        
+        //Pārbauda vai datu masīvā vispār ir vērtības
+        if (data[0] === undefined) {
+            neatrada();
+        } else {
+            izvadesDati = data;
+            lapa = 0;
+            document.getElementById('serialuIzvade').innerHTML = '';
+            //Ja datu masīva garums ir lielāks par 6, tad izvad pirmās 6 vērtības, citādāk izvada visas vērtības
+            if (data.length > 6) {
+                for (let i = 0; i < 6; i++) {
+                    epizodesVeidosana(data, i);
+                }
+            } else {
+                for (let i = 0; i < data.length; i++) {
+                    epizodesVeidosana(data, i);
+                }
+            }
+            //Izvad vienu seriāla karti, izmantojot 0 vērtību, jo seriāla vērtības no datu masīva vienmēr būs vienādas
+            serialaVeidosana(data, 0);
+            //Pārbauda vai bultiņām jāizskatās uzspiežamām
+            bultuParbauds();
+        }
     })
     .catch(function(error) {
         console.log(error);
@@ -235,15 +292,15 @@ function allSeries() {
 //Veido seriālu kartiņas
 function serialaVeidosana(data, i) {
     //Šis divs ir kaste kas iekļauj visus seriālus
-    div = document.getElementById('series');
+    div = document.getElementById('serialuIzvade');
     let img = document.createElement("img");
     //Alt vērtība ir vēlāk izmantota lai atpazīt kuram seriālam pieder bilde
     img.setAttribute('alt', `${data[i].name}`);
     img.classList.add('logo');
-    if (darkmode(1)) {
-        img.style.backgroundColor = '#00000010';
-    } else {
+    if (tumss) {
         img.style.backgroundColor = '#ffffff90';
+    } else {
+        img.style.backgroundColor = '#00000010';
     }
 
     //Zvaigzne kas atzīmē mīļotos seriālus
@@ -253,7 +310,7 @@ function serialaVeidosana(data, i) {
     } else {
         star.classList.add('far', 'fa-star','ms-1','mt-2','me-3','z-1','position-absolute');
     }
-    star.setAttribute('data-show', data[i].show_id);
+    star.setAttribute('data-serials', data[i].show_id);
 
     //Veido seriāla karti
     let div3 = document.createElement('div');
@@ -291,63 +348,15 @@ function serialaVeidosana(data, i) {
     div.style.display = 'flex';
 
     //Pievieno funkcijas elementiem pēc to izveidošanas
-    star.addEventListener('click', (favourite));
-    img.addEventListener("click", (seriesEpisodes));
-}
-
-//Izvada visas epizodes kas ir seriālam uz kura uzspiež
-function seriesEpisodes() {
-    if(debug) console.log('3')
-
-    let textValue = this.alt;
-    //Seriālam 'Love, Death & Robots' bija kļūda, kas tika izlabota šifrējot to vērtību izmantojot šo funkciju
-    textValue = encodeURIComponent(textValue);
-
-   fetch(`/search?showid=${textValue}&searchID=-1`, {method: 'POST'})
-    .then(function(response) {
-        if(response.ok) {
-            return response.json();
-        }
-        throw new Error('Request failed.');
-    })
-    .then(function(data) {
-        //Izdzēš iepriekšējās vērtības lai tās netraucētu
-        document.getElementById('output').innerHTML = "";
-        document.getElementById('series').innerHTML = '';
-        
-        //Pārbauda vai datu masīvā vispār ir vērtības
-        if (data[0] === undefined) {
-            neatrada();
-        } else {
-            outputData = data;
-            page = 0;
-            document.getElementById('series').innerHTML = '';
-            //Ja datu masīva garums ir lielāks par 6, tad izvad pirmās 6 vērtības, citādāk izvada visas vērtības
-            if (data.length > 6) {
-                for (let i = 0; i < 6; i++) {
-                    veidosana(data, i);
-                }
-            } else {
-                for (let i = 0; i < data.length; i++) {
-                    veidosana(data, i);
-                }
-            }
-            //Izvad vienu seriāla karti, izmantojot 0 vērtību, jo seriāla vērtības no datu masīva vienmēr būs vienādas
-            serialaVeidosana(data, 0);
-            //Pārbauda vai bultiņām jāizskatās uzspiežamām
-            arrowCheck();
-        }
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
+    star.addEventListener('click', (iecienit));
+    img.addEventListener("click", (serialaEpizodes));
 }
 
 //Izveido epizodes kartiņas
-function veidosana(data, i) {
+function epizodesVeidosana(data, i) {
     //Šis divs ir kaste kas iekļauj visas epizodes
-    document.getElementById('output').style.display = 'flex';
-    document.getElementById('output').classList.remove('bg-danger');
+    document.getElementById('epizozuIzvade').style.display = 'flex';
+    document.getElementById('epizozuIzvade').classList.remove('bg-danger');
 
     //Zvaigzne kas atzīmē mīļotos seriālus
     let star = document.createElement('p');
@@ -356,11 +365,11 @@ function veidosana(data, i) {
     } else {
         star.classList.add('far', 'fa-star','ms-1','mt-2','me-3','z-1','position-absolute');
     }
-    star.setAttribute('data-episode', data[i].episode_id);
+    star.setAttribute('data-epizode', data[i].episode_id);
 
     //Veido epizodes karti
     let div = document.createElement("div");
-    document.getElementById("output").appendChild(div);
+    document.getElementById("epizozuIzvade").appendChild(div);
     div.classList.add('card', 'm-2')
 
     div.appendChild(star);
@@ -370,10 +379,10 @@ function veidosana(data, i) {
     img.setAttribute('alt', `${data[i].name}`)
     img.classList.add('logo');
     div.appendChild(img);
-    if (darkmode(1)) {
-        img.style.backgroundColor = '#00000010';
-    } else {
+    if (tumss) {
         img.style.backgroundColor = '#ffffff90';
+    } else {
+        img.style.backgroundColor = '#00000010';
     }
 
     //Kartes noformējums
@@ -400,49 +409,49 @@ function veidosana(data, i) {
     Stāsta elementi: ${data[i].element1}${data[i].element2 != null ? ', '+data[i].element2.toLowerCase() : ''}${data[i].element3 != null ? ', '+data[i].element3.toLowerCase() : ''}
     `;
     //Pievieno funkcijas elementiem pēc to izveidošanas
-    star.addEventListener('click', (favourite));
-    img.addEventListener("click", (seriesEpisodes));
+    star.addEventListener('click', (iecienit));
+    img.addEventListener("click", (serialaEpizodes));
 }
 
 //Padara epizodi vai seriālu par mīļāko, lai to varētu ātrāk atrast
-function favourite() {
+function iecienit() {
     let f;
     //Ja klase ir fas, tad seriāls vai epizode jau ir atzīmēti kā mīļoti, citādāk tie nav atzīmēti kā mīļoti
     if (this.classList.contains('fas')) {
         f = 1;
-        if (this.dataset.episode) {
-            if (debug) console.log('ep fav 0');
-            //Maina vērtību outputData, lai mainot lapu saglabājās vērtību aizejot atpakaļ
-            for (let i in outputData) {
-                if (outputData[i].episode_id == this.dataset.episode) {
-                    outputData[i].efavourite = 0;
+        if (this.dataset.epizode) {
+            if (debug) console.log('epizode fav 0');
+            //Maina vērtību izvadesDati, lai mainot lapu saglabājās vērtību aizejot atpakaļ
+            for (let i in izvadesDati) {
+                if (izvadesDati[i].episode_id == this.dataset.epizode) {
+                    izvadesDati[i].efavourite = 0;
                 }
             }
         } else {
-            if (debug) console.log('show fav 0');
-            //Maina vērtību outputData, lai mainot lapu saglabājās vērtību aizejot atpakaļ
-            for (let i in outputData) {
-                if (outputData[i].show_id == this.dataset.episode) {
-                    outputData[i].favourite = 0;
+            if (debug) console.log('serials fav 0');
+            //Maina vērtību izvadesDati, lai mainot lapu saglabājās vērtību aizejot atpakaļ
+            for (let i in izvadesDati) {
+                if (izvadesDati[i].show_id == this.dataset.epizode) {
+                    izvadesDati[i].favourite = 0;
                 }
             }
         }
     } else {
         f = 0;
-        if (this.dataset.episode) {
-            if (debug) console.log('ep fav 1');
-            //Maina vērtību outputData, lai mainot lapu saglabājās vērtību aizejot atpakaļ
-            for (let i in outputData) {
-                if (outputData[i].episode_id == this.dataset.episode) {
-                    outputData[i].efavourite = 1;
+        if (this.dataset.epizode) {
+            if (debug) console.log('epizode fav 1');
+            //Maina vērtību izvadesDati, lai mainot lapu saglabājās vērtību aizejot atpakaļ
+            for (let i in izvadesDati) {
+                if (izvadesDati[i].episode_id == this.dataset.epizode) {
+                    izvadesDati[i].efavourite = 1;
                 }
             }
         } else {
-            if (debug) console.log('show fav 1');
-            //Maina vērtību outputData, lai mainot lapu saglabājās vērtību aizejot atpakaļ
-            for (let i in outputData) {
-                if (outputData[i].show_id == this.dataset.episode) {
-                    outputData[i].favourite = 1;
+            if (debug) console.log('serials fav 1');
+            //Maina vērtību izvadesDati, lai mainot lapu saglabājās vērtību aizejot atpakaļ
+            for (let i in izvadesDati) {
+                if (izvadesDati[i].show_id == this.dataset.epizode) {
+                    izvadesDati[i].favourite = 1;
                     break;
                 }
             }
@@ -452,8 +461,8 @@ function favourite() {
     this.classList.toggle('fas');
     this.classList.toggle('far');
     //Pārbauda vai tiek mīļota/nemīļota epizode vai seriāls
-    if(this.dataset.episode) {
-        fetch(`/favourite?favourite=${f}&epid=${this.dataset.episode}`, {method: 'POST'})
+    if(this.dataset.epizode) {
+        fetch(`/iecienit?iecienit=${f}&epizodesID=${this.dataset.epizode}`, {method: 'POST'})
             .then(function(response) {
         if(response.ok) {
             return;
@@ -464,7 +473,7 @@ function favourite() {
             console.log(error);
         });
     } else {
-        fetch(`/favourite?favourite=${f}&showid=${this.dataset.show}`, {method: 'POST'})
+        fetch(`/iecienit?iecienit=${f}&serialaID=${this.dataset.serials}`, {method: 'POST'})
             .then(function(response) {
         if(response.ok) {
             return;
@@ -478,9 +487,9 @@ function favourite() {
 }
 
 //Pārbauda vai bultiņām jāizskatās uzspiežamām
-function arrowCheck() {
+function bultuParbauds() {
     //Nulletajā lapā kreisā bultiņa nekad neizskatīsies spiežama, bet citās lapās vislai izskatīsies spiežama
-    if (page == 0) {
+    if (lapa == 0) {
         for (let i = 0; i < 2; i++) {
             left = document.getElementsByClassName('fa-caret-square-left')[i];
             left.classList.remove('fas');
@@ -496,7 +505,7 @@ function arrowCheck() {
         }
     }
     //Ja nākošajā lapā atrodas vismas viena epizode, tad labā bultiņa izskatās uzspiežama
-    if ((outputData.length - (((page+1)*6))) > 0) {
+    if ((izvadesDati.length - (((lapa+1)*6))) > 0) {
         //for cikls saņem abas bultiņas augšā un lejā un maina to stilu
         for (let i = 0; i < 2; i++) {
             right = document.getElementsByClassName('fa-caret-square-right')[i];
@@ -516,47 +525,47 @@ function arrowCheck() {
 }
 
 //Nodrošina to kā tiek izvadītas citas lapas uzspiežot uz bultiņām
-function pageChange(virz) {
-    if (debug) console.log(page);
-    if (debug) console.log((outputData.length - (((page+1)*6))));
+function lapasMaina(virz) {
+    if (debug) console.log(lapa);
+    if (debug) console.log((izvadesDati.length - (((lapa+1)*6))));
     //Pārbauda kurā virzienā rāda poga
-    if (virz == 'r'){
+    if (virz == 'l'){
         //Ja nākošā lapā ir vēl 6 vai vairāk epizodes, tad tiek izvadītas 6 epizodes, citādi ja nākošā lapā epizožu skaits ir mazāk par 6, tad izvada visas palikušās epizodes un ne vairāk, ja vairs nav epizožu tad nekas nenotiek
-        if ((outputData.length - (((page+1)*6))) >= 6) {
-            page++;
-            document.getElementById('output').innerHTML = '';
-        for (let i = page*6; i < (page+1)*6; i++) {
-            veidosana(outputData, i);
+        if ((izvadesDati.length - (((lapa+1)*6))) >= 6) {
+            lapa++;
+            document.getElementById('epizozuIzvade').innerHTML = '';
+        for (let i = lapa*6; i < (lapa+1)*6; i++) {
+            epizodesVeidosana(izvadesDati, i);
         }
-        } else if (((outputData.length - (((page+1)*6))) < 6) && (outputData.length - (((page+1)*6))) > 0) {
-            page++;
-            document.getElementById('output').innerHTML = '';
-            for (let i = page*6; i < outputData.length; i++) {
-                veidosana(outputData, i);
+        } else if (((izvadesDati.length - (((lapa+1)*6))) < 6) && (izvadesDati.length - (((lapa+1)*6))) > 0) {
+            lapa++;
+            document.getElementById('epizozuIzvade').innerHTML = '';
+            for (let i = lapa*6; i < izvadesDati.length; i++) {
+                epizodesVeidosana(izvadesDati, i);
             }
         }
-    } else if (virz == 'l') {
+    } else if (virz == 'k') {
         //Ja pagaišās lapas sākuma ID nav mazāks par 0, tad izvada 6 iepriekšējās epizodes
-        if ((page-1)*6  >= 0) {
-            page--;
-            document.getElementById('output').innerHTML = '';
-        for (let i = page*6; i < (page+1)*6; i++) {
-            veidosana(outputData, i);
+        if ((lapa-1)*6  >= 0) {
+            lapa--;
+            document.getElementById('epizozuIzvade').innerHTML = '';
+        for (let i = lapa*6; i < (lapa+1)*6; i++) {
+            epizodesVeidosana(izvadesDati, i);
         }
         }
     }
     //Pārbauda vai bultiņām jāizskatās uzspiežamām
-    arrowCheck();
+    bultuParbauds();
 }
 //Uzreiz izvad visus seriālus datu bāzē
-allSeries();
+visiSeriali();
 
 //Maina meklēšanas elementus lai tie būtu labāk redzami uz maziem un telefona ekrāniem
-function smallScreen(){
-    let a = document.getElementById('input-group');
-    let a2 = document.getElementById('input-group2');
+function ekranIzmers(){
+    let a = document.getElementById('ievada-grupa');
+    let a2 = document.getElementById('ievada-grupa2');
 
-    //input-group-sm ir mazāka versija input-group stila klasei
+    //input-group-sm ir mazāka versija input-group bootstrap klasei
     if (window.innerWidth <= 900) {
         a.classList.add('input-group-sm');
         a2.classList.add('input-group-sm');
@@ -577,40 +586,47 @@ function smallScreen(){
         a2.classList.remove('flex-column');
     }
 }
-smallScreen();
+ekranIzmers();
 //Kad mainās ekrāna izmērs, sākās ekrāna lieluma maiņas funkcija
-window.addEventListener('resize', smallScreen);
+window.addEventListener('resize', ekranIzmers);
 
-function darkmode(reas, col) {
+function tumsaisRezims(krasa) {
     //Maina tumšo un gaišo režīmu
-    let dark = (document.getElementById('settings').dataset.dark == "0")
-    if (reas == '0') {
-        if (col) {
-            //document.getElementById('darkmode').innerHTML = 'Gaišais režīms';
-            document.getElementById('settings').dataset.dark = '1';
-            document.getElementById('html').setAttribute('data-bs-theme','dark'); 
-            document.getElementById('navbar').style.backgroundColor = '#863707';
-            document.getElementById('body').style.backgroundColor = '#066efd';
-            document.getElementById('series').style.backgroundColor = '#363'
-            document.getElementById('output').style.backgroundColor = '#363'
-            for (let i = 0; i < document.getElementsByClassName('logo').length; i++) {
-                document.getElementsByClassName('logo')[i].style.background = '#ffffff90';
-            }
-        } else {
-            //document.getElementById('darkmode').innerHTML = 'Tumšais režīms'
-            document.getElementById('settings').dataset.dark = '0';
-            document.getElementById('html').removeAttribute('data-bs-theme','dark');
-            document.getElementById('navbar').style.backgroundColor = '#fd7e14';
-            document.getElementById('body').style.backgroundColor = '#0dcaf0';
-            document.getElementById('series').style.backgroundColor = '#7c7'
-            document.getElementById('output').style.backgroundColor = '#7c7'
-            for (let i = 0; i < document.getElementsByClassName('logo').length; i++) {
-                document.getElementsByClassName('logo')[i].style.background = '#00000010';
-            }
+    if (krasa) { // True - paliek tumšs, false - paliek gaišs
+        tumss = true;
+
+        //Maina dažādu elementu stilu uz tumšo režīmu
+        document.getElementById('html').setAttribute('data-bs-theme','dark');
+        //Maina navigācijas joslas krāsu 
+        document.getElementById('navbar').style.backgroundColor = '#863707';
+        //Maina fona krāsu
+        document.getElementById('body').style.backgroundColor = '#066efd';
+        //Maina seriālu kastes fonu
+        document.getElementById('serialuIzvade').style.backgroundColor = '#363'
+        //Maina epizožu kastes fonu
+        document.getElementById('epizozuIzvade').style.backgroundColor = '#363'
+        //Pievieno katrai bildei vieglu caurspīdīgu fonu priekš kontrasta
+        for (let i = 0; i < document.getElementsByClassName('logo').length; i++) {
+            document.getElementsByClassName('logo')[i].style.background = '#ffffff90';
         }
-    //Pārbauda vai tagad ir gaišais vai tumšais režīms
-    } else if (reas == '1') {
-        return (dark); //true = tumšais režīms, false = gaišais režīms
+    } else {
+        tumss = false;
+
+        //Noņem dažādu elementu stilu no tumšā režīma
+        document.getElementById('html').removeAttribute('data-bs-theme','dark');
+        //Maina navigācijas joslas krāsu
+        document.getElementById('navbar').style.backgroundColor = '#fd7e14';
+        //Maina fona krāsu
+        document.getElementById('body').style.backgroundColor = '#0dcaf0';
+        //Maina seriālu kastes fonu
+        document.getElementById('serialuIzvade').style.backgroundColor = '#7c7'
+        //Maina epizožu kastes fonu
+        document.getElementById('epizozuIzvade').style.backgroundColor = '#7c7'
+        //Pievieno katrai bildei vieglu caurspīdīgu fonu priekš kontrasta
+        for (let i = 0; i < document.getElementsByClassName('logo').length; i++) {
+            document.getElementsByClassName('logo')[i].style.background = '#00000010';
+        }
     }
+    //Pārbauda vai tagad ir gaišais vai tumšais režīms
 }
-darkmode(0);
+tumsaisRezims(false);

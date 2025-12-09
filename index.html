@@ -16,7 +16,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Iestatījumi</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -26,12 +26,11 @@
                         </button>
                         <div>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#" onclick="darkmode(0, false)">Gaišais režīms</a></li>
-                                <li><a class="dropdown-item" href="#" onclick="darkmode(0, true)">Tumšais režīms</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="tumsaisRezims(false)">Gaišais režīms</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="tumsaisRezims(true)">Tumšais režīms</a></li>
                             </ul>
                         </div>
                     </div>
-
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Aizvērt</button>
@@ -51,54 +50,49 @@
                         <a class="nav-link active" aria-current="page" href="/">Mājaslapa</a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link active" href="#" id="btn-all">Visas epizodes</a>
+                        <a class="nav-link active" href="#" id="poga-visi-epizodes">Visas epizodes</a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link active" href="#" id="btn-all-series">Visi seriāli</a>
+                        <a class="nav-link active" href="#" id="poga-visi-seriali">Visi seriāli</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav mb-2 mb-lg-0">
                         <li>
-                            <a class="nav-link active" href="#" id="btn-favourites">Mīļākie</a>
+                            <a class="nav-link active" href="#" id="poga-iecienitie">Iecienītie</a>
                         </li>
                         <li>
-                            <!--
-                            <a class="" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                            Launch demo modal
-                            </a>
-                            -->
-                            <a class="nav-link active fa-solid fa-gear" href="#" id="settings" data-bs-toggle="modal" data-dark="1" data-bs-target="#exampleModal"></a>
+                            <a class="nav-link active fa-solid fa-gear" href="#" id="settings" data-bs-toggle="modal" data-bs-target="#exampleModal"></a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
-        <main>
+        <main class="fs-1">
             <section class="meklet">
                 <h2>Meklēt datu bāzē</h2>
-                <div class="input-group mb-3" id="input-group">
-                    <input type="text" class="form-control border" placeholder="Pier Pressure" name="term" id="text-input" aria-label="Recipient’s username" aria-describedby="button-addon2">
-                    <button class="btn btn-secondary border" type="button" id="btn">Meklēt</button>
+                <div class="input-group mb-3" id="ievada-grupa">
+                    <input type="text" class="form-control border" placeholder="Pier Pressure" name="term" id="teksta-ievade" aria-label="Recipient’s username" aria-describedby="button-addon2">
+                    <button class="btn btn-secondary border" type="button" id="poga-meklet">Meklēt</button>
                 </div>
-                <div class="input-group justify-content-center" id="input-group2">
-                    <select class="btn btn-secondary form-select-sm border" id="inputGroupSelect01">
+                <div class="input-group justify-content-center" id="ievada-grupa2">
+                    <select class="btn btn-secondary form-select-sm border" id="ievadaGrupasIzvele01">
                         <option value="0" selected>Ko meklēt?</option>
                         <option value="1">Epizodes nosaukums</option>
                         <option value="2">Seriāla nosaukums</option>
                         <option value="3">Stāsta elementi</option>
                     </select>
-                    <select class="btn btn-secondary form-select-sm border" id="inputGroupSelect03">
+                    <select class="btn btn-secondary form-select-sm border" id="ievadaGrupasIzvele03">
                         <option value="0" selected>Pēc kā kārtot?</option>
                         <option value="1">Seriāla nosaukuma alfabētiski</option>
                         <option value="2">Epizodes nosaukuma alfabētiski</option>
                         <option value="3">Raidīšanas datuma</option>
                         <option value="4">Sezonas-epizodes</option>
                     </select>
-                    <select class="btn btn-secondary form-select-sm border" id="inputGroupSelect04">
+                    <select class="btn btn-secondary form-select-sm border" id="ievadaGrupasIzvele04">
                         <option value="0" class="fas fa-arrow-up" selected>&#8593;</option>
                         <option value="1" class="fas fa-arrow-down">&#8595;</option>
                     </select>
-                    <select class="btn btn-secondary form-select-sm border" id="inputGroupSelect02">
+                    <select class="btn btn-secondary form-select-sm border" id="ievadaGrupasIzvele02">
                         <option selected>Žanrs</option>
                         <option value="Komēdija">Komēdija</option>
                         <option value="Drāma">Drāma</option>
@@ -107,16 +101,16 @@
                     </select>
                 </div>
                 <div>
-                    <p class="far fa-caret-square-left" onclick="pageChange('l')"></p>
-                    <p class="far fa-caret-square-right" onclick="pageChange('r')"></p>
+                    <p class="far fa-caret-square-left" onclick="lapasMaina('k')"></p>
+                    <p class="far fa-caret-square-right" onclick="lapasMaina('l')"></p>
                 </div>
-                <div class="output-container border border-success rounded" id="series">
+                <div class="output-container border border-success rounded" id="serialuIzvade">
                 </div>
-                <div class="output-container border border-success rounded" id="output">
+                <div class="output-container border border-success rounded" id="epizozuIzvade">
                 </div>
                 <div>
-                    <p class="far fa-caret-square-left" onclick="pageChange('l')"></p>
-                    <p class="far fa-caret-square-right" onclick="pageChange('r')"></p>
+                    <p class="far fa-caret-square-left" onclick="lapasMaina('k')"></p>
+                    <p class="far fa-caret-square-right" onclick="lapasMaina('l')"></p>
                 </div>
             </section>
         </main>
