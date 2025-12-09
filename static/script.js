@@ -78,7 +78,7 @@ document.getElementById('poga-iecienitie').addEventListener('click', () => {
         throw new Error('Request failed.');
     })
     .then(function(data) {
-        izvadesDati = [];
+        lapa = 0;
         //Paslēpj un idzēš vērtības kastē ar seriāliem un kastē ar epizodēm jo tie būs atklāti kad veidoti
         document.getElementById('epizozuIzvade').style.display = 'none';
         document.getElementById('epizozuIzvade').innerHTML = "";
@@ -101,7 +101,6 @@ document.getElementById('poga-iecienitie').addEventListener('click', () => {
                 }
             }
             izvadesDati = epizodes;
-            lapa = 0;
             document.getElementById('serialuIzvade').innerHTML = '';
             let serialuIDs = [];
             if (epizodes.length > 6) {
@@ -188,6 +187,8 @@ function meklet() {
 
 //Izvada kļūdu ja nevarēja atrast jebkādu epizodi datu bāzē
 function neatrada() {
+    izvadesDati = [];
+    bultuParbauds();
     //Paslēpj un idzēš vērtības kastē ar seriāliem jo tos neizvad
     document.getElementById('serialuIzvade').style.display = 'none';
     document.getElementById('epizozuIzvade').style.display = 'flex';
@@ -488,37 +489,39 @@ function iecienit() {
 function bultuParbauds() {
     //Nulletajā lapā kreisā bultiņa nekad neizskatīsies spiežama, bet citās lapās vislai izskatīsies spiežama
     if (lapa == 0) {
-        for (let i = 0; i < 2; i++) {
-            left = document.getElementsByClassName('fa-caret-square-left')[i];
-            left.classList.remove('fas');
-            left.classList.add('far');
-            left.style.cursor = 'initial';
-        }
+        bultasMaina(document.getElementsByClassName('fa-caret-square-left'), false);
     } else {
-        for (let i = 0; i < 2; i++) {
-            left = document.getElementsByClassName('fa-caret-square-left')[i];
-            left.classList.remove('far');
-            left.classList.add('fas');
-            left.style.cursor = 'pointer';
-        }
+        bultasMaina(document.getElementsByClassName('fa-caret-square-left'), true);
     }
     //Ja nākošajā lapā atrodas vismas viena epizode, tad labā bultiņa izskatās uzspiežama
     if ((izvadesDati.length - (((lapa+1)*6))) > 0) {
-        //for cikls saņem abas bultiņas augšā un lejā un maina to stilu
-        for (let i = 0; i < 2; i++) {
-            right = document.getElementsByClassName('fa-caret-square-right')[i];
-            right.classList.remove('far');
-            right.classList.add('fas');
-            right.style.cursor = 'pointer';
-        }
+        bultasMaina(document.getElementsByClassName('fa-caret-square-right'), true);
     } else {
-        //for cikls saņem abas bultiņas augšā un lejā un maina to stilu
-        for (let i = 0; i < 2; i++) {
-            right = document.getElementsByClassName('fa-caret-square-right')[i];
-            right.classList.remove('fas');
-            right.classList.add('far');
-            right.style.cursor = 'initial';
-        }
+        bultasMaina(document.getElementsByClassName('fa-caret-square-right'), false);
+    }
+}
+
+function bultasMaina(bultas, spiezams) {
+    if (spiezams) {
+        //Noņem bultas kontūru
+        bultas[0].classList.remove('far');
+        bultas[1].classList.remove('far');
+        //Pievieno bultas pildījumu
+        bultas[0].classList.add('fas');
+        bultas[1].classList.add('fas');
+        //Pelīte rāda ka var uzspiest uz bultas
+        bultas[0].style.cursor = 'pointer';
+        bultas[1].style.cursor = 'pointer';
+    } else {
+        //Noņem bultas pildījumu
+        bultas[0].classList.remove('fas');
+        bultas[1].classList.remove('fas');
+        //Pievieno bultas kontūru
+        bultas[0].classList.add('far');
+        bultas[1].classList.add('far');
+        //Pelīte nerāda ka varētu spiest uz pogas
+        bultas[0].style.cursor = 'initial';
+        bultas[1].style.cursor = 'initial';
     }
 }
 
