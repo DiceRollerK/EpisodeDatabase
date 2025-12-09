@@ -11,6 +11,34 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     </head>
     <body id="body">
+        <!-- Parādīsies uzspiezot uz iestatījumu pogas -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Krāsas režīms
+                        </button>
+                        <div>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" onclick="darkmode(0, false)">Gaišais režīms</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="darkmode(0, true)">Tumšais režīms</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Aizvērt</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <nav class="navbar navbar-expand-lg .bg-secondary.bg-gradient shadow p-3 mb-5 fixed-top" style="background-color: var(--bs-orange);" id="navbar">
             <div class="container-fluid">
                 <a class="navbar-brand" href="/">Epizodu datu bāze</a>
@@ -30,8 +58,17 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav mb-2 mb-lg-0">
-                        <a class="nav-link active" href="#" id="darkmode" onclick="darkmode('0')" data-dark="1">Tumšais režīms</a>
-                        <a class="nav-link active" href="#" id="btn-favourites">Mīļākie</a>
+                        <li>
+                            <a class="nav-link active" href="#" id="btn-favourites">Mīļākie</a>
+                        </li>
+                        <li>
+                            <!--
+                            <a class="" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Launch demo modal
+                            </a>
+                            -->
+                            <a class="nav-link active fa-solid fa-gear" href="#" id="settings" data-bs-toggle="modal" data-dark="1" data-bs-target="#exampleModal"></a>
+                        </li>
                     </ul>
                 </div>
             </div>

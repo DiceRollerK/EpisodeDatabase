@@ -581,13 +581,13 @@ smallScreen();
 //Kad mainās ekrāna izmērs, sākās ekrāna lieluma maiņas funkcija
 window.addEventListener('resize', smallScreen);
 
-function darkmode(reas) {
+function darkmode(reas, col) {
     //Maina tumšo un gaišo režīmu
-    let dark = (document.getElementById('darkmode').dataset.dark == "0")
+    let dark = (document.getElementById('settings').dataset.dark == "0")
     if (reas == '0') {
-        if (dark) {
-            document.getElementById('darkmode').innerHTML = 'Gaišais režīms';
-            document.getElementById('darkmode').dataset.dark = '1';
+        if (col) {
+            //document.getElementById('darkmode').innerHTML = 'Gaišais režīms';
+            document.getElementById('settings').dataset.dark = '1';
             document.getElementById('html').setAttribute('data-bs-theme','dark'); 
             document.getElementById('navbar').style.backgroundColor = '#863707';
             document.getElementById('body').style.backgroundColor = '#066efd';
@@ -597,8 +597,8 @@ function darkmode(reas) {
                 document.getElementsByClassName('logo')[i].style.background = '#ffffff90';
             }
         } else {
-            document.getElementById('darkmode').innerHTML = 'Tumšais režīms'
-            document.getElementById('darkmode').dataset.dark = '0';
+            //document.getElementById('darkmode').innerHTML = 'Tumšais režīms'
+            document.getElementById('settings').dataset.dark = '0';
             document.getElementById('html').removeAttribute('data-bs-theme','dark');
             document.getElementById('navbar').style.backgroundColor = '#fd7e14';
             document.getElementById('body').style.backgroundColor = '#0dcaf0';
@@ -613,5 +613,4 @@ function darkmode(reas) {
         return (dark); //true = tumšais režīms, false = gaišais režīms
     }
 }
-
 darkmode(0);
