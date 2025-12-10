@@ -112,7 +112,7 @@ CREATE TABLE show (
 INSERT INTO show VALUES(1,'Arrested Development',1,'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arrested_Development.svg/2560px-Arrested_Development.svg.png',1,1,0);
 INSERT INTO show VALUES(2,'Seinfeld',2,'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Seinfeld_logo.svg/2560px-Seinfeld_logo.svg.png',2,2,0);
 INSERT INTO show VALUES(3,'Room 104',3,'https://upload.wikimedia.org/wikipedia/en/d/d5/Room_104_teaser.png',3,3,0);
-INSERT INTO show VALUES(4,'Love, Death & Robots',4,'https://upload.wikimedia.org/wikipedia/en/c/cb/Love%2C_Death_%26_Robots_Logo.png',4,4,0);
+INSERT INTO show VALUES(4,'Love, Death and Robots',4,'https://upload.wikimedia.org/wikipedia/en/c/cb/Love%2C_Death_%26_Robots_Logo.png',4,4,0);
 INSERT INTO show VALUES(5,'Inside No. 9',5,'https://upload.wikimedia.org/wikipedia/en/c/ce/Inside_No._9_series_one_DVD_cover.jpg',5,5,0);
 INSERT INTO show VALUES(6,'Nathan For You',6,'https://upload.wikimedia.org/wikipedia/en/d/db/Nathan_For_You_title.png',6,6,0);
 COMMIT;

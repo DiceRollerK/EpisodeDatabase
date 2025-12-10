@@ -17,37 +17,37 @@
     </head>
     <body class="helvetica" id="body">
         <!-- Parādīsies uzspiezot uz iestatījumu pogas -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Iestatījumi</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h1 class="modal-title fs-5" id="modalLabel">Iestatījumi</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Aizvērt"></button>
                     </div>
                     <div class="modal-body">
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Krāsas režīms
-                        </button>
-                        <div>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#" onclick="tumsaisRezims(false)">Gaišais režīms</a></li>
-                                <li><a class="dropdown-item" href="#" onclick="tumsaisRezims(true)">Tumšais režīms</a></li>
-                            </ul>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Krāsas režīms
+                            </button>
+                            <div>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" onclick="tumsaisRezims(false)">Gaišais režīms</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="tumsaisRezims(true)">Tumšais režīms</a></li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Šrifts
-                        </button>
-                        <div>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item helvetica" href="#" onclick="sriftaMaina('helvetica')">Helvetica</a></li>
-                                <li><a class="dropdown-item comic-sans" href="#" onclick="sriftaMaina('comic-sans')">Comic Sans MS</a></li>
-                                <li><a class="dropdown-item openDyslexic" href="#" onclick="sriftaMaina('openDyslexic')">OpenDyslexic</a></li>
-                            </ul>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Šrifts
+                            </button>
+                            <div>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item helvetica" href="#" onclick="sriftaMaina('helvetica')">Helvetica</a></li>
+                                    <li><a class="dropdown-item comic-sans" href="#" onclick="sriftaMaina('comic-sans')">Comic Sans MS</a></li>
+                                    <li><a class="dropdown-item openDyslexic" href="#" onclick="sriftaMaina('openDyslexic')">OpenDyslexic</a></li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Aizvērt</button>
@@ -64,13 +64,13 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">Mājaslapa</a>
+                            <a class="nav-link active" aria-current="page" href="/">Mājaslapa</a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link active" href="#" id="poga-visi-epizodes">Visas epizodes</a>
+                            <a class="nav-link active" href="#" id="poga-visas-epizodes">Visas epizodes</a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link active" href="#" id="poga-visi-seriali">Visi seriāli</a>
+                            <a class="nav-link active" href="#" id="poga-visi-seriali">Visi seriāli</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav mb-2 mb-lg-0">
@@ -78,7 +78,7 @@
                             <a class="nav-link active" href="#" id="poga-iecienitie">Iecienītie</a>
                         </li>
                         <li>
-                            <a class="nav-link active fa-solid fa-gear" href="#" id="settings" data-bs-toggle="modal" data-bs-target="#exampleModal"></a>
+                            <a class="nav-link active fa-solid fa-gear" href="#" id="settings" data-bs-toggle="modal" data-bs-target="#modal"></a>
                         </li>
                     </ul>
                 </div>
@@ -88,7 +88,7 @@
             <section class="meklet">
                 <h2>Meklēt datu bāzē</h2>
                 <div class="input-group mb-3" id="ievada-grupa">
-                    <input type="text" class="form-control border" placeholder="Pier Pressure" name="term" id="teksta-ievade" aria-label="Recipient’s username" aria-describedby="button-addon2">
+                    <input type="text" class="form-control border" placeholder="Pier Pressure" name="term" id="teksta-ievade" aria-label="Recipient's username" aria-describedby="button-addon2">
                     <button class="btn btn-secondary border" type="button" id="poga-meklet">Meklēt</button>
                 </div>
                 <div class="input-group justify-content-center" id="ievada-grupa2">

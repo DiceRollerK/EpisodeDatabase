@@ -7,7 +7,7 @@ let lapa = 0;
 let tumss = false;
 
 //Izvada visas epizodes kas ir datu bāzē
-document.getElementById("poga-visi-epizodes").addEventListener("click", () =>{
+document.getElementById("poga-visas-epizodes").addEventListener("click", () =>{
     if(debug) console.log('1')
     //Saņem vērtību kartosanasID no izvēlnes 'Pēc kā kārtot'
     let kartosanasID = document.getElementById('ievadaGrupasIzvele03').value;
@@ -27,9 +27,8 @@ document.getElementById("poga-visi-epizodes").addEventListener("click", () =>{
         throw new Error('Request failed.');
     })
     .then(function(data) {
-        //Paslēpj kasti ar seriāliem jo tie nebūs izvadīti
-        document.getElementById('serialuIzvade').innerHTML = '';
-        document.getElementById('serialuIzvade').style.display = 'none';
+        //Paslēpj iepriekšējās kastes un izdzēš iepriekšējās vērtības
+        iztirit();
         //Ievieto vērtības izvadesDati masīvā, lai tās vērtības varētu vēlāk izmantot lapu maiņas funkcija
         izvadesDati = data;
         lapa = 0;
@@ -80,10 +79,7 @@ document.getElementById('poga-iecienitie').addEventListener('click', () => {
     .then(function(data) {
         lapa = 0;
         //Paslēpj un idzēš vērtības kastē ar seriāliem un kastē ar epizodēm jo tie būs atklāti kad veidoti
-        document.getElementById('epizozuIzvade').style.display = 'none';
-        document.getElementById('epizozuIzvade').innerHTML = "";
-        document.getElementById('serialuIzvade').innerHTML = '';   
-        document.getElementById('serialuIzvade').style.display = 'none';
+        iztirit();
 
         //Pārbauda vai datu masīvā vispār ir vērtības
         if (data[0] === undefined) {
@@ -142,12 +138,21 @@ function meklet() {
 
     let tekstaVertiba = document.getElementById('teksta-ievade').value;
     if (tekstaVertiba == '') tekstaVertiba = 'Pier Pressure';
-    let zanrs = document.getElementById('ievadaGrupasIzvele02').value;
-    let meklesanasID = document.getElementById('ievadaGrupasIzvele01').value;
-    let kartosanasID = document.getElementById('ievadaGrupasIzvele03').value;
-    let virzID = document.getElementById('ievadaGrupasIzvele04').value;
 
-   fetch(`/meklet?ievaditais=${tekstaVertiba}${zanrs != "Žanrs" ? '&zanrs='+zanrs : ''}&meklesanasID=${meklesanasID}&kartosanasID=${kartosanasID}&virzID=${virzID}`, {method: 'POST'})
+    if(debug) console.log(/^[a-zA-Z0-9&,.'\! ]*$/g.test(tekstaVertiba));
+
+    if (/^[a-zA-Z0-9&,.'\! ]*$/g.test(tekstaVertiba)) {
+        tekstaVertiba = tekstaVertiba.replace('&', 'and');
+        tekstaVertiba = tekstaVertiba.replace('\'s', '');
+        tekstaVertiba = tekstaVertiba.replace('\'', '');
+
+
+        let zanrs = document.getElementById('ievadaGrupasIzvele02').value;
+        let meklesanasID = document.getElementById('ievadaGrupasIzvele01').value;
+        let kartosanasID = document.getElementById('ievadaGrupasIzvele03').value;
+        let virzID = document.getElementById('ievadaGrupasIzvele04').value;
+
+    fetch(`/meklet?ievaditais=${tekstaVertiba}${zanrs != "Žanrs" ? '&zanrs='+zanrs : ''}&meklesanasID=${meklesanasID}&kartosanasID=${kartosanasID}&virzID=${virzID}`, {method: 'POST'})
     .then(function(response) {
         if(response.ok) {
             return response.json();
@@ -156,9 +161,7 @@ function meklet() {
     })
     .then(function(data) {
         //Paslēpj un idzēš vērtības kastē ar seriāliem, jo tos nevar atrast un izdzēš vērtības kastē ar epizodēm, lai tie netraucētu
-        document.getElementById('epizozuIzvade').innerHTML = "";
-        document.getElementById('serialuIzvade').innerHTML = '';
-        document.getElementById('serialuIzvade').style.display = 'none';
+        iztirit();
 
         //Pārbauda vai datu masīvā vispār ir vērtības
         if (data[0] === undefined) {
@@ -183,6 +186,23 @@ function meklet() {
     .catch(function(error) {
         console.log(error);
     });
+    } else {
+        izvadesDati = [];
+        bultuParbauds();
+        //Paslēpj un idzēš vērtības kastē ar seriāliem jo tos neizvad
+        iztirit();
+        document.getElementById('epizozuIzvade').style.display = 'flex';
+        //Iedod klasi kas krāso fonu kastei sarkanu, kas nozīmē kļūda
+        document.getElementById('epizozuIzvade').classList.add('bg-danger');
+        //teksta kaste
+        let kludasKaste = document.createElement("div");
+        document.getElementById("epizozuIzvade").appendChild(kludasKaste);
+        kludasKaste.classList.add('output-inside')
+        //teksts
+        let teksts = document.createElement('p');
+        kludasKaste.appendChild(teksts);
+        teksts.innerHTML = `Ievadītas nederīgas vērtības!`
+    }
 }
 
 //Izvada kļūdu ja nevarēja atrast jebkādu epizodi datu bāzē
@@ -190,7 +210,7 @@ function neatrada() {
     izvadesDati = [];
     bultuParbauds();
     //Paslēpj un idzēš vērtības kastē ar seriāliem jo tos neizvad
-    document.getElementById('serialuIzvade').style.display = 'none';
+    iztirit();
     document.getElementById('epizozuIzvade').style.display = 'flex';
     //Iedod klasi kas krāso fonu kastei sarkanu, kas nozīmē kļūda
     document.getElementById('epizozuIzvade').classList.add('bg-danger');
@@ -218,15 +238,13 @@ function visiSeriali() {
         //izvadesDati tiek iztīrīts, jo mainīt lapas nav iespējams pēc šīs funkcijas
         izvadesDati = [];
         lapa = 0;
-        //Paslēpj un idzēš vērtības kastē ar epizodēm jo tie nebūs izvadīti
-        document.getElementById('epizozuIzvade').innerHTML = "";
-        document.getElementById('epizozuIzvade').style.display = 'none';
+        //Paslēpj un idzēš nevajadzīgās vērtības
+        iztirit();
 
         //Pārbauda vai datu masīvā vispār ir vērtības
         if (data[0] === undefined) {
             neatrada();
         } else {
-            document.getElementById('serialuIzvade').innerHTML = '';
             for (let i = 0; i < data.length; i++) {
                 serialaVeidosana(data, i);
             }
@@ -256,8 +274,7 @@ function serialaEpizodes() {
     })
     .then(function(data) {
         //Izdzēš iepriekšējās vērtības lai tās netraucētu
-        document.getElementById('epizozuIzvade').innerHTML = "";
-        document.getElementById('serialuIzvade').innerHTML = '';
+        iztirit();
         
         //Pārbauda vai datu masīvā vispār ir vērtības
         if (data[0] === undefined) {
@@ -265,7 +282,6 @@ function serialaEpizodes() {
         } else {
             izvadesDati = data;
             lapa = 0;
-            document.getElementById('serialuIzvade').innerHTML = '';
             //Ja datu masīva garums ir lielāks par 6, tad izvad pirmās 6 vērtības, citādāk izvada visas vērtības
             if (data.length > 6) {
                 for (let i = 0; i < 6; i++) {
@@ -560,33 +576,31 @@ function lapasMaina(virz) {
     //Pārbauda vai bultiņām jāizskatās uzspiežamām
     bultuParbauds();
 }
-//Uzreiz izvad visus seriālus datu bāzē
-visiSeriali();
 
 //Maina meklēšanas elementus lai tie būtu labāk redzami uz maziem un telefona ekrāniem
 function ekranIzmers(){
-    let a = document.getElementById('ievada-grupa');
-    let a2 = document.getElementById('ievada-grupa2');
+    let tekstaIevads = document.getElementById('ievada-grupa');
+    let izvelnes = document.getElementById('ievada-grupa2');
 
     //input-group-sm ir mazāka versija input-group bootstrap klasei
     if (window.innerWidth <= 900) {
-        a.classList.add('input-group-sm');
-        a2.classList.add('input-group-sm');
+        tekstaIevads.classList.add('input-group-sm');
+        izvelnes.classList.add('input-group-sm');
     }else{ 
-        a.classList.remove('input-group-sm');
-        a2.classList.remove('input-group-sm');
+        tekstaIevads.classList.remove('input-group-sm');
+        izvelnes.classList.remove('input-group-sm');
     }
 
     //Maina izveļņu izvadi kolonnās, jo tā paliek iespējams tos spiest
     if(window.innerWidth <= 600) {
-        a2.classList.remove('input-group');
-        a2.classList.remove('input-group-sm');
-        a2.classList.add('d-flex')
-        a2.classList.add('flex-column')
+        izvelnes.classList.remove('input-group');
+        izvelnes.classList.remove('input-group-sm');
+        izvelnes.classList.add('d-flex')
+        izvelnes.classList.add('flex-column')
     } else {
-        a2.classList.add('input-group');
-        a2.classList.remove('d-flex')
-        a2.classList.remove('flex-column');
+        izvelnes.classList.add('input-group');
+        izvelnes.classList.remove('d-flex')
+        izvelnes.classList.remove('flex-column');
     }
 }
 ekranIzmers();
@@ -594,10 +608,8 @@ ekranIzmers();
 window.addEventListener('resize', ekranIzmers);
 
 function tumsaisRezims(krasa) {
-    console.log(krasa);
     //Maina tumšo un gaišo režīmu
     if (krasa == true) { // True - paliek tumšs, false - paliek gaišs
-        console.log(krasa);
         tumss = true;
 
         //Maina dažādu elementu stilu uz tumšo režīmu
@@ -616,7 +628,6 @@ function tumsaisRezims(krasa) {
         }
         localStorage.setItem('krasa','tumšs');
     } else {
-        console.log(krasa);
         tumss = false;
 
         //Noņem dažādu elementu stilu no tumšā režīma
@@ -637,6 +648,13 @@ function tumsaisRezims(krasa) {
     }
 }
 
+function iztirit() {
+    document.getElementById('serialuIzvade').style.display = 'none';
+    document.getElementById('epizozuIzvade').style.display = 'none';
+    document.getElementById('serialuIzvade').innerHTML = '';
+    document.getElementById('epizozuIzvade').innerHTML = '';
+}
+
 function sriftaMaina(srifts) {
     body = document.getElementById('body');
     body.className = '';
@@ -651,5 +669,6 @@ function sakums(srifts, krasa) {
         tumsaisRezims(false);
     }
     sriftaMaina(srifts);
+    visiSeriali();
 }
 sakums(localStorage.getItem('srifts'),localStorage.getItem('krasa'));
