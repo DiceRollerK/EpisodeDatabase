@@ -195,14 +195,13 @@ function neatrada() {
     //Iedod klasi kas krāso fonu kastei sarkanu, kas nozīmē kļūda
     document.getElementById('epizozuIzvade').classList.add('bg-danger');
     //teksta kaste
-    let div = document.createElement("div");
-    document.getElementById("epizozuIzvade").appendChild(div);
-    div.classList.add('output-inside')
+    let kludasKaste = document.createElement("div");
+    document.getElementById("epizozuIzvade").appendChild(kludasKaste);
+    kludasKaste.classList.add('output-inside')
     //teksts
-    let text = document.createElement('p');
-    div.appendChild(text);
-    //text.id = 'teksta-izvade'
-    text.innerHTML = `Nevarēju atrast!`
+    let teksts = document.createElement('p');
+    kludasKaste.appendChild(teksts);
+    teksts.innerHTML = `Nevarēju atrast!`
 }
 
 //Izvada visus seriālus kas ir datu bāzē
@@ -291,64 +290,64 @@ function serialaEpizodes() {
 //Veido seriālu kartiņas
 function serialaVeidosana(data, i) {
     //Šis divs ir kaste kas iekļauj visus seriālus
-    div = document.getElementById('serialuIzvade');
-    let img = document.createElement("img");
+    serialuKaste = document.getElementById('serialuIzvade');
+    let logo = document.createElement("img");
     //Alt vērtība ir vēlāk izmantota lai atpazīt kuram seriālam pieder bilde
-    img.setAttribute('alt', `${data[i].name}`);
-    img.classList.add('logo');
+    logo.setAttribute('alt', `${data[i].name}`);
+    logo.classList.add('logo');
     if (tumss) {
-        img.style.backgroundColor = '#ffffff90';
+        logo.style.backgroundColor = '#ffffff90';
     } else {
-        img.style.backgroundColor = '#00000010';
+        logo.style.backgroundColor = '#00000010';
     }
 
     //Zvaigzne kas atzīmē mīļotos seriālus
-    let star = document.createElement('p');
+    let zvaigzne = document.createElement('p');
     if(data[i].favourite == 1) {
-        star.classList.add('fas', 'fa-star','ms-1','mt-2','me-3','z-1','position-absolute');
+        zvaigzne.classList.add('fas', 'fa-star','ms-1','mt-2','me-3','z-1','position-absolute');
     } else {
-        star.classList.add('far', 'fa-star','ms-1','mt-2','me-3','z-1','position-absolute');
+        zvaigzne.classList.add('far', 'fa-star','ms-1','mt-2','me-3','z-1','position-absolute');
     }
-    star.setAttribute('data-serials', data[i].show_id);
+    zvaigzne.setAttribute('data-serials', data[i].show_id);
 
     //Veido seriāla karti
-    let div3 = document.createElement('div');
-    div.appendChild(div3);
+    let serialaKarte = document.createElement('div');
+    serialuKaste.appendChild(serialaKarte);
 
-    div3.appendChild(star)
+    serialaKarte.appendChild(zvaigzne)
 
     //Kartes noformējums
-    div3.classList.add('card', 'm-2', 'bg-success-subtle');
-    div3.appendChild(img);
+    serialaKarte.classList.add('card', 'm-2', 'bg-success-subtle');
+    serialaKarte.appendChild(logo);
 
-    let div2  = document.createElement("div");
-    div3.appendChild(div2);
-    div2.classList.add('card-body', 'p-2');
+    let kartinasIeksa  = document.createElement("div");
+    serialaKarte.appendChild(kartinasIeksa);
+    kartinasIeksa.classList.add('card-body', 'p-2');
     
     //Teksta stils
-    let h5 = document.createElement('h5');
-    h5.classList.add("card-title", "fs-4'");
-    let text = document.createElement('p');
-    text.classList.add("card-text", "fs-5");
+    let nosaukums = document.createElement('h5');
+    nosaukums.classList.add("card-title", "fs-4'");
+    let teksts = document.createElement('p');
+    teksts.classList.add("card-text", "fs-5");
                 
-    div2.appendChild(h5);
-    div2.appendChild(text);
+    kartinasIeksa.appendChild(nosaukums);
+    kartinasIeksa.appendChild(teksts);
 
     //Ievieto informāciju kartē
-    img.setAttribute("src", `${data[i].logo}`);
-    h5.innerHTML = `${data[i].name}`
-    text.innerHTML = 
+    logo.setAttribute("src", `${data[i].logo}`);
+    nosaukums.innerHTML = `${data[i].name}`
+    teksts.innerHTML = 
     `
     Raidīšanas gadi: ${data[i].start_date} līdz ${data[i].end_date}<br>
     Žanri: ${data[i].genre1}${data[i].genre2 != null ? ', '+data[i].genre2.toLowerCase() : ''}${data[i].genre3 != null ? ', '+data[i].genre3.toLowerCase() : ''}<br>
     Tēmas: ${data[i].theme1}, ${data[i].theme2.toLowerCase()}, ${data[i].theme3.toLowerCase()}
     `;
-    div3.style.display = 'flex';
-    div.style.display = 'flex';
+    serialaKarte.style.display = 'flex';
+    serialuKaste.style.display = 'flex';
 
     //Pievieno funkcijas elementiem pēc to izveidošanas
-    star.addEventListener('click', (iecienit));
-    img.addEventListener("click", (serialaEpizodes));
+    zvaigzne.addEventListener('click', (iecienit));
+    logo.addEventListener("click", (serialaEpizodes));
 }
 
 //Izveido epizodes kartiņas
@@ -358,49 +357,52 @@ function epizodesVeidosana(data, i) {
     document.getElementById('epizozuIzvade').classList.remove('bg-danger');
 
     //Zvaigzne kas atzīmē mīļotos seriālus
-    let star = document.createElement('p');
+    let zvaigzne = document.createElement('p');
+    zvaigzne.classList.add('fa-star','ms-1','mt-2','me-3','z-1','position-absolute');
     if(data[i].efavourite == 1) {
-        star.classList.add('fas', 'fa-star','ms-1','mt-2','me-3','z-1','position-absolute');
+        //Pilna zvaigzne
+        zvaigzne.classList.add('fas');
     } else {
-        star.classList.add('far', 'fa-star','ms-1','mt-2','me-3','z-1','position-absolute');
+        //Zvaigznes kontūrs
+        zvaigzne.classList.add('far');
     }
-    star.setAttribute('data-epizode', data[i].episode_id);
+    zvaigzne.setAttribute('data-epizode', data[i].episode_id);
 
     //Veido epizodes karti
-    let div = document.createElement("div");
-    document.getElementById("epizozuIzvade").appendChild(div);
-    div.classList.add('card', 'm-2')
+    let epizodesKarte = document.createElement("div");
+    document.getElementById("epizozuIzvade").appendChild(epizodesKarte);
+    epizodesKarte.classList.add('card', 'm-2')
 
-    div.appendChild(star);
+    epizodesKarte.appendChild(zvaigzne);
 
-    let img = document.createElement("img");
+    let logo = document.createElement("img");
     //Alt vērtība ir vēlāk izmantota lai atpazīt kuram seriālam pieder bilde
-    img.setAttribute('alt', `${data[i].name}`)
-    img.classList.add('logo');
-    div.appendChild(img);
+    logo.setAttribute('alt', `${data[i].name}`)
+    logo.classList.add('logo');
+    epizodesKarte.appendChild(logo);
     if (tumss) {
-        img.style.backgroundColor = '#ffffff90';
+        logo.style.backgroundColor = '#ffffff90';
     } else {
-        img.style.backgroundColor = '#00000010';
+        logo.style.backgroundColor = '#00000010';
     }
 
     //Kartes noformējums
-    let div2  = document.createElement("div");
-    div.appendChild(div2);
-    div2.classList.add('card-body', 'p-2');
+    let kartinasIeksa  = document.createElement("div");
+    epizodesKarte.appendChild(kartinasIeksa);
+    kartinasIeksa.classList.add('card-body', 'p-2');
     
     //Teksta stils
-    let h5 = document.createElement('h5');
-    h5.classList.add("card-title", "fs-4'");
-    let text = document.createElement('p');
-    text.classList.add("card-text", "fs-5");
-    div2.appendChild(h5);
-    div2.appendChild(text);
+    let nosaukums = document.createElement('h5');
+    nosaukums.classList.add("card-title", "fs-4'");
+    let teksts = document.createElement('p');
+    teksts.classList.add("card-text", "fs-5");
+    kartinasIeksa.appendChild(nosaukums);
+    kartinasIeksa.appendChild(teksts);
 
     //Ievieto informāciju kartē
-    img.setAttribute("src", data[i].logo);
-    h5.innerHTML = `&quot;${data[i].ename}&quot;`
-    text.innerHTML = 
+    logo.setAttribute("src", data[i].logo);
+    nosaukums.innerHTML = `&quot;${data[i].ename}&quot;`
+    teksts.innerHTML = 
     `
     Sezona-epizode: ${data[i].season}-${data[i].episode}<br>
     Raidīšanas datums: ${data[i].date}<br>
@@ -408,8 +410,8 @@ function epizodesVeidosana(data, i) {
     Stāsta elementi: ${data[i].element1}${data[i].element2 != null ? ', '+data[i].element2.toLowerCase() : ''}${data[i].element3 != null ? ', '+data[i].element3.toLowerCase() : ''}
     `;
     //Pievieno funkcijas elementiem pēc to izveidošanas
-    star.addEventListener('click', (iecienit));
-    img.addEventListener("click", (serialaEpizodes));
+    zvaigzne.addEventListener('click', (iecienit));
+    logo.addEventListener("click", (serialaEpizodes));
 }
 
 //Padara epizodi vai seriālu par mīļāko, lai to varētu ātrāk atrast
@@ -592,8 +594,10 @@ ekranIzmers();
 window.addEventListener('resize', ekranIzmers);
 
 function tumsaisRezims(krasa) {
+    console.log(krasa);
     //Maina tumšo un gaišo režīmu
-    if (krasa) { // True - paliek tumšs, false - paliek gaišs
+    if (krasa == true) { // True - paliek tumšs, false - paliek gaišs
+        console.log(krasa);
         tumss = true;
 
         //Maina dažādu elementu stilu uz tumšo režīmu
@@ -610,7 +614,9 @@ function tumsaisRezims(krasa) {
         for (let i = 0; i < document.getElementsByClassName('logo').length; i++) {
             document.getElementsByClassName('logo')[i].style.background = '#ffffff90';
         }
+        localStorage.setItem('krasa','tumšs');
     } else {
+        console.log(krasa);
         tumss = false;
 
         //Noņem dažādu elementu stilu no tumšā režīma
@@ -627,17 +633,23 @@ function tumsaisRezims(krasa) {
         for (let i = 0; i < document.getElementsByClassName('logo').length; i++) {
             document.getElementsByClassName('logo')[i].style.background = '#00000010';
         }
+        localStorage.setItem('krasa','gaišs');
     }
-    //Pārbauda vai tagad ir gaišais vai tumšais režīms
 }
-tumsaisRezims(false);
 
 function sriftaMaina(srifts) {
     body = document.getElementById('body');
-    if (srifts == 'Helvetica') {
-        body.className = '';
-    } else {
-        body.className = '';
-        body.classList.add(srifts);
-    }
+    body.className = '';
+    body.classList.add(srifts);
+    localStorage.setItem('srifts',srifts);
 }
+
+function sakums(srifts, krasa) {
+    if (krasa == 'tumšs') {
+        tumsaisRezims(true);
+    } else {
+        tumsaisRezims(false);
+    }
+    sriftaMaina(srifts);
+}
+sakums(localStorage.getItem('srifts'),localStorage.getItem('krasa'));
