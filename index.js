@@ -210,5 +210,11 @@ app.post('/iecienit', (req, res) => {
     res.send('throw');
 });
 
+app.post('/iestatijumi', (req, res) => {
+    console.log('a');
+    console.log(db.prepare(`SELECT * FROM settings WHERE id_user = ${req.query.user};`).all());
+    res.send(db.prepare(`SELECT * FROM settings WHERE id_user = ${req.query.user};`).all());
+});
+
 import Database from 'better-sqlite3';
 const db = new Database('./database/EpisodeDatabase.db');

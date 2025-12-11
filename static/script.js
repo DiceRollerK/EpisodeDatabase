@@ -7,6 +7,7 @@ let serialuDati;
 let epizozuLapa = 0;
 let serialuLapa = 0;
 let tumss = false;
+let user_id;
 
 //Izvada visas epizodes kas ir datu bāzē
 document.getElementById("poga-visas-epizodes").addEventListener("click", () =>{
@@ -288,6 +289,11 @@ function kluda(iemesls) {
     let teksts = document.createElement('p');
     kludasKaste.appendChild(teksts);
     switch (iemesls) {
+        default: 
+            document.getElementById('epizozuIzvade').classList.add('bg-danger');
+            document.getElementById('epizodem').classList.add('bg-danger');
+            teksts.innerHTML = 'Atvainojamies, ir nezināma kļūda.'; 
+            break;
         case 0:
             document.getElementById('epizozuIzvade').classList.add('bg-danger');
             document.getElementById('epizodem').classList.add('bg-danger');
@@ -309,6 +315,12 @@ function kluda(iemesls) {
             let kluda = document.getElementById('teksta-ievade').value.replace(/[a-zA-Z0-9&,.'\! ]/g,'')
             teksts.innerHTML = `Meklējumā ir nederīgais rakstzīme '${kluda}', ja šī rakstzīme atrodas nosaukumā, tad mēģiniet rakstīt to bez tās.`
             break;
+        case 4:
+            document.getElementById('epizozuIzvade').classList.add('bg-danger');
+            document.getElementById('epizodem').classList.add('bg-danger');
+            teksts.innerHTML = 'Iestatījumi neielādējās, jo bija kļūda!'
+            break;
+        
     }
 }
 
@@ -838,16 +850,49 @@ function sriftaMaina(srifts) {
     body = document.getElementById('body');
     body.className = '';
     body.classList.add(srifts);
-    localStorage.setItem('srifts',srifts);
+    console.log(srifts);
 }
 
-function sakums(srifts, krasa) {
+function krasasMaina(krasa) {
     if (krasa == 'tumšs') {
         tumsaisRezims(true);
     } else {
         tumsaisRezims(false);
     }
-    sriftaMaina(srifts);
-    visiSeriali();
 }
-sakums(localStorage.getItem('srifts'),localStorage.getItem('krasa'));
+
+function iestatijumi() {
+     fetch(`/iestatijumi?user=${user_id}`, {method: 'POST'})
+    .then(function(response) {
+        if(response.ok) {
+            return response.json();
+        } 
+        throw new Error('Request failed.');
+    })
+    .then(function(data) {
+        console.log(data);
+        if (data[0] === undefined) {
+            kluda(4);
+        } else {
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].setting == 'šrifts') {
+                    console.log('šrifts')
+                    sriftaMaina(data[i].value);
+                } else if (data[i].setting == 'tēma') {
+                    console.log('tēma')
+                    krasasMaina(data[i].value);
+                }
+            }
+        }
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+}
+
+function sakums() {
+    visiSeriali();
+    user_id = 1;
+    iestatijumi();
+}
+sakums();

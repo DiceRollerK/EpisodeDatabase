@@ -80,29 +80,28 @@ season TINYINT,
 episode TINYINT,
 genre VARCHAR(30),
 id_show INT,
-id_story INT,
-favourite INT
+id_story INT
 );
 
-INSERT INTO episode VALUES(1,'Pilot','2003-11-02',1,1,'Komēdija',1,1,0);
-INSERT INTO episode VALUES(2,'The Marine Biologist','1994-02-10',5,14,'Komēdija',2,2,0);
-INSERT INTO episode VALUES(3,'Pier Pressure','2004-01-11',1,10,'Komēdija',1,3,0);
-INSERT INTO episode VALUES(4,'Crossroads','2019-11-22',3,11,'Komēdija-drāma',3,4,0);
-INSERT INTO episode VALUES(5,'Three Robots','2019-03-15',1,2,'Komēdija',4,5,0);
-INSERT INTO episode VALUES(6,'Sonnie''s Edge','2019-03-15',1,1,'Ass sižets',4,6,0);
-INSERT INTO episode VALUES(7,'The Witness','2019-03-15',1,3,'Ass sižets',4,7,0);
-INSERT INTO episode VALUES(8,'Ralphie','2017-07-28',1,1,'Šausmas',3,8,0);
-INSERT INTO episode VALUES(9,'Suits','2019-03-15',1,4,'Ass sižets',4,9,0);
-INSERT INTO episode VALUES(10,'Sucker of Souls','2019-03-15',1,5,'Ass sižets',4,10,0);
-INSERT INTO episode VALUES(11,'When The Yogurt Took Over','2019-03-15',1,6,'Komēdija',4,11,0);
-INSERT INTO episode VALUES(12,'Beyond the Aquila Rift','2019-03-15',1,7,'Drāma',4,12,0);
-INSERT INTO episode VALUES(13,'The Internet','2017-08-25',1,5,'Drāma',3,13,0);
-INSERT INTO episode VALUES(14,'The Night Babby Died','2020-09-25',4,10,'Drāma',3,14,0);
-INSERT INTO episode VALUES(15,'The Murderer','2020-07-24',4,1,'Drāma',3,15,0);
-INSERT INTO episode VALUES(16,'Foam Party','2020-09-04',4,7,'Šausmas',3,16,0);
-INSERT INTO episode VALUES(17,'Sardines','2014-02-05',1,1,'Komēdija',5,17,0);
-INSERT INTO episode VALUES(18,'Yogurt Shop / Pizzeria','2013-02-28',1,1,'Realitātes-komēdija',6,18,0);
-INSERT INTO episode VALUES(19,'Poo Cocktail','2000-10-01',1,1,'Realitātes-komēdija',7,19,0);
+INSERT INTO episode VALUES(1,'Pilot','2003-11-02',1,1,'Komēdija',1,1);
+INSERT INTO episode VALUES(2,'The Marine Biologist','1994-02-10',5,14,'Komēdija',2,2);
+INSERT INTO episode VALUES(3,'Pier Pressure','2004-01-11',1,10,'Komēdija',1,3);
+INSERT INTO episode VALUES(4,'Crossroads','2019-11-22',3,11,'Komēdija-drāma',3,4);
+INSERT INTO episode VALUES(5,'Three Robots','2019-03-15',1,2,'Komēdija',4,5);
+INSERT INTO episode VALUES(6,'Sonnie''s Edge','2019-03-15',1,1,'Ass sižets',4,6);
+INSERT INTO episode VALUES(7,'The Witness','2019-03-15',1,3,'Ass sižets',4,7);
+INSERT INTO episode VALUES(8,'Ralphie','2017-07-28',1,1,'Šausmas',3,8);
+INSERT INTO episode VALUES(9,'Suits','2019-03-15',1,4,'Ass sižets',4,9);
+INSERT INTO episode VALUES(10,'Sucker of Souls','2019-03-15',1,5,'Ass sižets',4,10);
+INSERT INTO episode VALUES(11,'When The Yogurt Took Over','2019-03-15',1,6,'Komēdija',4,11);
+INSERT INTO episode VALUES(12,'Beyond the Aquila Rift','2019-03-15',1,7,'Drāma',4,12);
+INSERT INTO episode VALUES(13,'The Internet','2017-08-25',1,5,'Drāma',3,13);
+INSERT INTO episode VALUES(14,'The Night Babby Died','2020-09-25',4,10,'Drāma',3,14);
+INSERT INTO episode VALUES(15,'The Murderer','2020-07-24',4,1,'Drāma',3,15);
+INSERT INTO episode VALUES(16,'Foam Party','2020-09-04',4,7,'Šausmas',3,16);
+INSERT INTO episode VALUES(17,'Sardines','2014-02-05',1,1,'Komēdija',5,17);
+INSERT INTO episode VALUES(18,'Yogurt Shop / Pizzeria','2013-02-28',1,1,'Realitātes-komēdija',6,18);
+INSERT INTO episode VALUES(19,'Poo Cocktail','2000-10-01',1,1,'Realitātes-komēdija',7,19);
 
 CREATE TABLE show (
 	show_id	INT PRIMARY KEY NOT NULL,
@@ -121,4 +120,42 @@ INSERT INTO show VALUES(4,'Love, Death and Robots',4,'https://upload.wikimedia.o
 INSERT INTO show VALUES(5,'Inside No. 9',5,'https://upload.wikimedia.org/wikipedia/en/c/ce/Inside_No._9_series_one_DVD_cover.jpg',5,5,0);
 INSERT INTO show VALUES(6,'Nathan For You',6,'https://upload.wikimedia.org/wikipedia/en/d/db/Nathan_For_You_title.png',6,6,0);
 INSERT INTO show VALUES(7,'Jackass',7,'https://upload.wikimedia.org/wikipedia/en/thumb/2/22/Jackass-logo-2.svg/960px-Jackass-logo-2.svg.png',7,7,0);
+
+CREATE TABLE user (
+	user_id INT PRIMARY KEY NOT NULL,
+	username VARCHAR(30) NOT NULL,
+	password VARCHAR(100) NOT NULL
+);
+
+INSERT INTO user VALUES(1,'Admin','Admin');
+
+CREATE TABLE favouriteEpisodes (
+	id_user INT NOT NULL,
+	id_episode INT NOT NULL,
+	favourite INT,
+	UNIQUE(id_user, id_episode)
+);
+
+INSERT INTO favouriteEpisodes VALUES(1,2,1);
+INSERT INTO favouriteEpisodes VALUES(1,5,1);
+
+CREATE TABLE favouriteShows (
+	id_user INT NOT NULL,
+	id_show INT NOT NULL,
+	favourite INT,
+	UNIQUE(id_user, id_show)
+);
+
+INSERT INTO favouriteShows VALUES(1,1,1);
+INSERT INTO favouriteShows VALUES(1,6,1);
+
+CREATE TABLE settings (
+	id_user INT NOT NULL,
+	setting VARCHAR(30) NOT NULL,
+	value VARCHAR,
+	UNIQUE(id_user, setting)
+);
+
+INSERT INTO settings VALUES(1,'šrifts','comic-sans');
+INSERT INTO settings VALUES(1,'tēma','gaišs');
 COMMIT;
