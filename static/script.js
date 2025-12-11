@@ -165,7 +165,7 @@ document.getElementById('poga-iecienitie').addEventListener('click', () => {
 
         //Pārbauda vai datu masīvā vispār ir vērtības
         if (data[0] === undefined) {
-            neatrada();
+            kluda(2);
         } else {
             let seriali = [];
             let epizodes = [];
@@ -246,7 +246,7 @@ function meklet() {
 
         //Pārbauda vai datu masīvā vispār ir vērtības
         if (data[0] === undefined) {
-            neatrada();
+            kluda(0);
         } else {
             izvadesDati = data;
             if(debug) console.log(data);
@@ -269,33 +269,17 @@ function meklet() {
         console.log(error);
     });
     } else {
-        izvadesDati = [];
-        //Paslēpj un idzēš vērtības kastē ar seriāliem jo tos neizvad
-        iztirit();
-        document.getElementById('epizozuIzvade').style.display = 'flex';
-        //Iedod klasi kas krāso fonu kastei sarkanu, kas nozīmē kļūda
-        document.getElementById('epizozuIzvade').classList.add('bg-danger');
-        document.getElementById('epizodem').classList.add('bg-danger');
-        //teksta kaste
-        let kludasKaste = document.createElement("div");
-        document.getElementById("epizozuIzvade").appendChild(kludasKaste);
-        kludasKaste.classList.add('output-inside')
-        //teksts
-        let teksts = document.createElement('p');
-        kludasKaste.appendChild(teksts);
-        teksts.innerHTML = `Ievadītas nederīgas vērtības!`
+        kluda(3);
     }
 }
 
 //Izvada kļūdu ja nevarēja atrast jebkādu epizodi datu bāzē
-function neatrada() {
+function kluda(iemesls) {
     izvadesDati = [];
     //Paslēpj un idzēš vērtības kastē ar seriāliem jo tos neizvad
     iztirit();
     document.getElementById('epizozuIzvade').style.display = 'flex';
     //Iedod klasi kas krāso fonu kastei sarkanu, kas nozīmē kļūda
-    document.getElementById('epizozuIzvade').classList.add('bg-danger');
-    document.getElementById('epizodem').classList.add('bg-danger');
     //teksta kaste
     let kludasKaste = document.createElement("div");
     document.getElementById("epizodem").appendChild(kludasKaste);
@@ -303,7 +287,29 @@ function neatrada() {
     //teksts
     let teksts = document.createElement('p');
     kludasKaste.appendChild(teksts);
-    teksts.innerHTML = `Nevarēju atrast!`
+    switch (iemesls) {
+        case 0:
+            document.getElementById('epizozuIzvade').classList.add('bg-danger');
+            document.getElementById('epizodem').classList.add('bg-danger');
+            teksts.innerHTML = 'Neatradu nevienu epizodi!'; 
+            break;
+        case 1:
+            document.getElementById('epizozuIzvade').classList.add('bg-danger');
+            document.getElementById('epizodem').classList.add('bg-danger');
+            teksts.innerHTML = 'Neatradu nevienu seriālu!';
+            break;
+        case 2:
+            document.getElementById('epizozuIzvade').classList.add('bg-danger');
+            document.getElementById('epizodem').classList.add('bg-danger');
+            teksts.innerHTML = 'Nav neviena iecienīta seriāla!'; 
+            break;
+        case 3:
+            document.getElementById('epizozuIzvade').classList.add('bg-danger');
+            document.getElementById('epizodem').classList.add('bg-danger');
+            let kluda = document.getElementById('teksta-ievade').value.replace(/[a-zA-Z0-9&,.'\! ]/g,'')
+            teksts.innerHTML = `Meklējumā ir nederīgais rakstzīme '${kluda}', ja šī rakstzīme atrodas nosaukumā, tad mēģiniet rakstīt to bez tās.`
+            break;
+    }
 }
 
 //Izvada visus seriālus kas ir datu bāzē
@@ -324,7 +330,7 @@ function visiSeriali() {
 
         //Pārbauda vai datu masīvā vispār ir vērtības
         if (data[0] === undefined) {
-            neatrada();
+            kluda(1);
         } else {
             serialuDati = data;
             if (data.length > 6) {
@@ -367,7 +373,7 @@ function serialaEpizodes() {
         
         //Pārbauda vai datu masīvā vispār ir vērtības
         if (data[0] === undefined) {
-            neatrada();
+            kluda(0);
         } else {
             izvadesDati = data;
             
@@ -779,6 +785,9 @@ function tumsaisRezims(krasa) {
         document.getElementById('serialuIzvade').style.backgroundColor = '#363'
         //Maina epizožu kastes fonu
         document.getElementById('epizozuIzvade').style.backgroundColor = '#363'
+
+        document.getElementById('serialiem').style.backgroundColor = '#363'
+        document.getElementById('epizodem').style.backgroundColor = '#363'
         //Pievieno katrai bildei vieglu caurspīdīgu fonu priekš kontrasta
         for (let i = 0; i < document.getElementsByClassName('logo').length; i++) {
             document.getElementsByClassName('logo')[i].style.background = '#ffffff90';
@@ -797,6 +806,8 @@ function tumsaisRezims(krasa) {
         document.getElementById('serialuIzvade').style.backgroundColor = '#7c7'
         //Maina epizožu kastes fonu
         document.getElementById('epizozuIzvade').style.backgroundColor = '#7c7'
+        document.getElementById('serialiem').style.backgroundColor = '#7c7'
+        document.getElementById('epizodem').style.backgroundColor = '#7c7'
         //Pievieno katrai bildei vieglu caurspīdīgu fonu priekš kontrasta
         for (let i = 0; i < document.getElementsByClassName('logo').length; i++) {
             document.getElementsByClassName('logo')[i].style.background = '#00000010';
@@ -810,6 +821,9 @@ function iztirit() {
     serialuLapa = 0;
     document.getElementById('serialuIzvade').style.display = 'none';
     document.getElementById('epizozuIzvade').style.display = 'none';
+
+    document.getElementById('epizozuIzvade').classList.remove('bg-danger','bg-warning');
+    document.getElementById('epizodem').classList.remove('bg-danger','bg-warning');
 
     document.getElementById('serialuAugsejasBultas').innerHTML = '';
     document.getElementById('serialiem').innerHTML = '';
