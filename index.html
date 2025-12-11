@@ -117,18 +117,28 @@
                         <option value="Ass sižets">Ass sižets</option>
                     </select>
                 </div>
+                <!--
                 <div>
-                    <p class="far fa-caret-square-left" onclick="lapasMaina('k')"></p>
-                    <p class="far fa-caret-square-right" onclick="lapasMaina('l')"></p>
+                    <p class="far fa-caret-square-left" onclick="epizozuLapasMaina('k')"></p>
+                    <p class="far fa-caret-square-right" onclick="epizozuLapasMaina('l')"></p>
                 </div>
-                <div class="output-container border border-success rounded" id="serialuIzvade">
+                -->
+                <div class="output-container border border-success rounded flex-column flex-wrap align-items-center" id="serialuIzvade">
+                    <div id="serialuAugsejasBultas"></div>
+                    <div id="serialiem" class="d-flex flex-wrap justify-content-center output-container"></div>
+                    <div id="serialuApaksejasBultas"></div>
                 </div>
-                <div class="output-container border border-success rounded" id="epizozuIzvade">
+                <div class="output-container border border-success rounded flex-column flex-wrap align-items-center" id="epizozuIzvade">
+                    <div id="epizozuAugsejasBultas"></div>
+                    <div id="epizodem" class="d-flex flex-wrap justify-content-center output-container"></div>
+                    <div id="epizozuApaksejasBultas"></div>
                 </div>
+                <!--
                 <div>
-                    <p class="far fa-caret-square-left" onclick="lapasMaina('k')"></p>
-                    <p class="far fa-caret-square-right" onclick="lapasMaina('l')"></p>
+                    <p class="far fa-caret-square-left" onclick="epizozuLapasMaina('k')"></p>
+                    <p class="far fa-caret-square-right" onclick="epizozuLapasMaina('l')"></p>
                 </div>
+                -->
             </section>
         </main>
     </body>

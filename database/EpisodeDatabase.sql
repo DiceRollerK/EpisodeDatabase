@@ -13,6 +13,7 @@ INSERT INTO time VALUES(3,'2017-07-28','2020-10-09');
 INSERT INTO time VALUES(4,'2019-03-15','pašreiz');
 INSERT INTO time VALUES(5,'2014-02-05','2024-06-12');
 INSERT INTO time VALUES(6,'2013-02-28','2017-11-09');
+INSERT INTO time VALUES(7,'2000-10-01','2001-08-12');
 
 CREATE TABLE genre(
 genre_id INT PRIMARY KEY NOT NULL,
@@ -27,6 +28,7 @@ INSERT INTO genre VALUES(3,'Komēdija','Drāma','Šausmas');
 INSERT INTO genre VALUES(4,'Drāma','Ass sižets','Komēdija');
 INSERT INTO genre VALUES(5,'Komēdija','Šausmas',NULL);
 INSERT INTO genre VALUES(6,'Komēdija','Realitātes',NULL);
+INSERT INTO genre VALUES(7,'Komēdija','Realitātes',NULL);
 
 CREATE TABLE story(
 story_id INT PRIMARY KEY NOT NULL,
@@ -53,6 +55,7 @@ INSERT INTO story VALUES(15,'Muzikants','Atzīšanās','Mazs koncerts');
 INSERT INTO story VALUES(16,'90-tie','Neparedzētas sekas','Paslēpts');
 INSERT INTO story VALUES(17,'Spēle','Skapis','Noslēpumi');
 INSERT INTO story VALUES(18,'Kakas garšas jogurts','Darba intervija','Bezmaksa picas');
+INSERT INTO story VALUES(19,'Nolaupība','Resnie tērpi','Pašaizsardzība');
 
 CREATE TABLE theme(
 theme_id INT PRIMARY KEY NOT NULL,
@@ -67,6 +70,7 @@ INSERT INTO theme VALUES(3,'Trauma','Fantāzija','Pudeles epizodes');
 INSERT INTO theme VALUES(4,'Mīlestība','Nāve','Roboti');
 INSERT INTO theme VALUES(5,'Sižeta pavērsieni','Pudeles epizodes','Ikdienišķums');
 INSERT INTO theme VALUES(6,'Komercdarbība','Muļķīgi plāni','Parodija');
+INSERT INTO theme VALUES(7,'Stulbība','Draudzība','Ievainojumi');
 
 CREATE TABLE episode(
 episode_id INT PRIMARY KEY NOT NULL,
@@ -98,6 +102,7 @@ INSERT INTO episode VALUES(15,'The Murderer','2020-07-24',4,1,'Drāma',3,15,0);
 INSERT INTO episode VALUES(16,'Foam Party','2020-09-04',4,7,'Šausmas',3,16,0);
 INSERT INTO episode VALUES(17,'Sardines','2014-02-05',1,1,'Komēdija',5,17,0);
 INSERT INTO episode VALUES(18,'Yogurt Shop / Pizzeria','2013-02-28',1,1,'Realitātes-komēdija',6,18,0);
+INSERT INTO episode VALUES(19,'Poo Cocktail','2000-10-01',1,1,'Realitātes-komēdija',7,19,0);
 
 CREATE TABLE show (
 	show_id	INT PRIMARY KEY NOT NULL,
@@ -115,4 +120,5 @@ INSERT INTO show VALUES(3,'Room 104',3,'https://upload.wikimedia.org/wikipedia/e
 INSERT INTO show VALUES(4,'Love, Death and Robots',4,'https://upload.wikimedia.org/wikipedia/en/c/cb/Love%2C_Death_%26_Robots_Logo.png',4,4,0);
 INSERT INTO show VALUES(5,'Inside No. 9',5,'https://upload.wikimedia.org/wikipedia/en/c/ce/Inside_No._9_series_one_DVD_cover.jpg',5,5,0);
 INSERT INTO show VALUES(6,'Nathan For You',6,'https://upload.wikimedia.org/wikipedia/en/d/db/Nathan_For_You_title.png',6,6,0);
+INSERT INTO show VALUES(7,'Jackass',7,'https://upload.wikimedia.org/wikipedia/en/thumb/2/22/Jackass-logo-2.svg/960px-Jackass-logo-2.svg.png',7,7,0);
 COMMIT;
