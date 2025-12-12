@@ -866,7 +866,7 @@ function krasasMaina(krasa) {
 }
 
 function iestatijumi() {
-     fetch(`/iestatijumi?user=${user_id}`, {method: 'POST'})
+    fetch(`/iestatijumi?user=${user_id}`, {method: 'POST'})
     .then(function(response) {
         if(response.ok) {
             return response.json();
@@ -887,7 +887,7 @@ function iestatijumi() {
 }
 
 function sakums() {
-    user_id = 2;
+    if (user_id == null) user_id = 1;
     visiSeriali();
     iestatijumi();
 }
@@ -897,3 +897,26 @@ function nosacijumaIestatijumi() {
     sriftaMaina('helvetica');
 }
 sakums();
+
+document.getElementById('login').addEventListener('click', () => {
+    let lietotajVards = document.getElementById('lietotajVards').value;
+    let parole = document.getElementById('parole').value;
+    fetch(`/login?lietotajVards=${lietotajVards}&parole=${parole}`, {method: 'POST'})
+    .then(function(response) {
+        if(response.ok) {
+            return response.json();
+        } 
+        throw new Error('Request failed.');
+    })
+    .then(function(data) {
+        if (data[0] === undefined) {
+            kluda(4);
+        } else {
+            user_id = data[0].user_id;
+            sakums();
+        }
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+});

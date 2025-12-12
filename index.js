@@ -264,5 +264,9 @@ app.post('/iestatijumi', (req, res) => {
     res.send(db.prepare(`SELECT * FROM settings WHERE id_user = ${req.query.user};`).all());
 });
 
+app.post('/login', (req, res) => {
+    res.send(db.prepare(`SELECT user_id FROM user WHERE password = '${req.query.parole}' AND username = '${req.query.lietotajVards}';`).all());
+});
+
 import Database from 'better-sqlite3';
 const db = new Database('./database/EpisodeDatabase.db');

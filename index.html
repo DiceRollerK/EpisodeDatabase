@@ -55,6 +55,27 @@
                 </div>
             </div>
         </div>
+        <!--Konta ielogošanas logs -->
+        <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="modalLabel">Iestatījumi</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Aizvērt"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group mb-3">
+                            <input id="lietotajVards" type="text" class="form-control" placeholder="Username" aria-label="Username">
+                            <input id="parole" type="password" class="form-control" placeholder="Parole" aria-label="Password">
+                            <button class="btn btn-primary" type="button" id="login">login</button>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Aizvērt</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <nav class="navbar navbar-expand-lg .bg-secondary.bg-gradient shadow p-3 mb-5 fixed-top" style="background-color: var(--bs-orange);" id="navbar">
             <div class="container-fluid">
                 <a class="navbar-brand" href="/">Epizodu datu bāze</a>
@@ -79,6 +100,9 @@
                         </li>
                         <li>
                             <a class="nav-link active fa-solid fa-gear" href="#" id="settings" data-bs-toggle="modal" data-bs-target="#modal"></a>
+                        </li>
+                        <li>
+                            <a class="nav-link active fa-solid fa-user" href="#" id="loginMenu" data-bs-toggle="modal" data-bs-target="#loginModal"></a>
                         </li>
                     </ul>
                 </div>

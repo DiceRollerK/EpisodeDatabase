@@ -15,3 +15,10 @@ Pagaidām datu bāzē daudz vērtību nav, un visas vērtības var izvest izmant
 Ko meklē un žanra izvēles neko vēl nedara, bet var ierakstīt epizodes vai seriāla nosaukumu meklēšanas joslā un uzspiežot uz pogu "meklēt" var redzēt visas epizodes ar tādu nosaukumu vai tā nosauktu seriālu
 
 Arī uzspiežot uz seriāla logo var saņemt visas epizodes no tā seriāla kas ir datu bāzē
+
+# Konti
+Saitē uzspiežot uz cilvēciņu simbolu labajā augšējā stūrī var pielogoties kontam, pagaidām nevar izveidot savu kontu caur saiti, bet ir testa konti kuros var ieiet:
+
+(Lietotājvārds, parole)
+* admin, admin
+* user, user

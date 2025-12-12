@@ -136,9 +136,16 @@ CREATE TABLE favouriteEpisodes (
 	UNIQUE(id_user, id_episode)
 );
 
+INSERT INTO favouriteEpisodes VALUES(1,0,0);
+INSERT INTO favouriteEpisodes VALUES(2,0,0);
 INSERT INTO favouriteEpisodes VALUES(1,2,1);
 INSERT INTO favouriteEpisodes VALUES(1,5,1);
+INSERT INTO favouriteEpisodes VALUES(1,3,1);
+INSERT INTO favouriteEpisodes VALUES(1,4,1);
 INSERT INTO favouriteEpisodes VALUES(2,9,1);
+INSERT INTO favouriteEpisodes VALUES(2,7,1);
+INSERT INTO favouriteEpisodes VALUES(2,10,1);
+INSERT INTO favouriteEpisodes VALUES(2,16,1);
 
 CREATE TABLE favouriteShows (
 	id_user INT NOT NULL,
@@ -147,10 +154,11 @@ CREATE TABLE favouriteShows (
 	UNIQUE(id_user, id_show)
 );
 
-INSERT INTO favouriteShows VALUES(1,1,1);
-INSERT INTO favouriteShows VALUES(1,6,1);
 INSERT INTO favouriteShows VALUES(1,0,0);
 INSERT INTO favouriteShows VALUES(2,0,0);
+INSERT INTO favouriteShows VALUES(1,1,1);
+INSERT INTO favouriteShows VALUES(2,4,1);
+INSERT INTO favouriteShows VALUES(2,7,1);
 
 CREATE TABLE settings (
 	id_user INT NOT NULL,
