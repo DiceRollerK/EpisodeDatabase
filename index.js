@@ -61,12 +61,12 @@ app.post('/meklet', (req, res) => {
             }
 
             res.send(db.prepare(`SELECT *, e.name AS ename, CASE
-            WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE user.user_id = id_user)) THEN 1
+            WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE id_user = ${req.query.user} AND favourite = 1)) THEN 1
             ELSE 0
             END AS efavourite 
             FROM episode AS e, show AS s, story, user
             WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (user_id = (SELECT id_user FROM favouriteEpisodes))${zanrs ? ` AND (genre LIKE '%${zanrs}%')` : ''} 
-            AND (${vaicajums})
+            AND (${vaicajums}) AND (${req.query.user} IN (SELECT id_user FROM favouriteEpisodes))
             ORDER BY CASE WHEN (ename LIKE '${req.query.ievaditais}%' OR s.name LIKE '${req.query.ievaditais}%' OR element1 LIKE '${req.query.ievaditais}%' OR element2 LIKE '${req.query.ievaditais}%' OR element3 LIKE '${req.query.ievaditais}%') THEN 1 ELSE 2 END 
             ${kartot(parseInt(kartosanasID), parseInt(virzID), false)};`).all());
         break;
@@ -80,12 +80,12 @@ app.post('/meklet', (req, res) => {
                 vaicajums = vaicajums+`(ename LIKE '%${meklejums[i]}%')`
             }
             res.send(db.prepare(`SELECT *, e.name AS ename, CASE
-            WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE user.user_id = id_user)) THEN 1
+            WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE id_user = ${req.query.user} AND favourite = 1))) THEN 1
             ELSE 0
             END AS efavourite 
             FROM episode AS e, show AS s, story, user
             WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (user_id = (SELECT id_user FROM favouriteEpisodes))${zanrs ? ` AND (genre LIKE '%${zanrs}%' )` : ''} 
-            AND (${vaicajums})
+            AND (${vaicajums}) AND (${req.query.user} IN (SELECT id_user FROM favouriteEpisodes))
             ORDER BY CASE WHEN (ename LIKE '${req.query.ievaditais}%') THEN 1 ELSE 2 END 
             ${kartot(parseInt(kartosanasID), parseInt(virzID), false)};`).all());
         break;
@@ -100,12 +100,12 @@ app.post('/meklet', (req, res) => {
             }
 
             res.send(db.prepare(`SELECT *, e.name AS ename, CASE
-            WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE user.user_id = id_user)) THEN 1
+            WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE id_user = ${req.query.user} AND favourite = 1))) THEN 1
             ELSE 0
             END AS efavourite 
             FROM episode AS e, show AS s, story, user
             WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (user_id = (SELECT id_user FROM favouriteEpisodes))${zanrs ? ` AND (genre LIKE '%${zanrs}%')` : ''} 
-            AND (${vaicajums})
+            AND (${vaicajums}) AND (${req.query.user} IN (SELECT id_user FROM favouriteEpisodes))
             ORDER BY CASE WHEN (s.name LIKE '${req.query.ievaditais}%') THEN 1 ELSE 2 END 
             ${kartot(parseInt(kartosanasID), parseInt(virzID), false)};`).all());
         break;
@@ -120,45 +120,44 @@ app.post('/meklet', (req, res) => {
             }
             
             res.send(db.prepare(`SELECT *, e.name AS ename, CASE
-            WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE user.user_id = id_user)) THEN 1
+            WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE id_user = ${req.query.user} AND favourite = 1))) THEN 1
             ELSE 0
             END AS efavourite 
             FROM episode AS e, show AS s, story, user
             WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (user_id = (SELECT id_user FROM favouriteEpisodes))${zanrs ? ` AND (genre LIKE '%${zanrs}%')` : ''} 
-            AND (${vaicajums})
+            AND (${vaicajums}) AND (${req.query.user} IN (SELECT id_user FROM favouriteEpisodes))
             ORDER BY CASE WHEN (element1 LIKE '${req.query.ievaditais}%' OR element2 LIKE '${req.query.ievaditais}%' OR element3 LIKE '${req.query.ievaditais}%') THEN 1 ELSE 2 END 
             ${kartot(parseInt(kartosanasID), parseInt(virzID), false)};`).all());
         break;
         //Meklē visas epizodes no kāda seriāla
         case '-1':
-            res.send(db.prepare(`SELECT *, e.name AS ename, 
+            res.send(db.prepare(`SELECT *, e.name AS ename,
             CASE
-                WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE user.user_id = id_user)) THEN 1
+				WHEN (show_id IN (SELECT id_show FROM favouriteShows WHERE id_user = ${req.query.user} AND favourite = 1)) THEN 1
+				ELSE 0
+			END AS sfavourite, 
+            CASE
+                WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE id_user = ${req.query.user} AND favourite = 1)) THEN 1
                 ELSE 0
             END AS efavourite 
             FROM episode AS e, show AS s, story, time, genre, theme, user
-            WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme) AND (user_id = (SELECT id_user FROM favouriteEpisodes))
+            WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme) AND (user_id = (SELECT id_user FROM favouriteEpisodes)) AND (${req.query.user} IN (SELECT id_user FROM favouriteEpisodes))
             AND (show_id = ${serialaID}) ORDER BY season ASC, episode ASC;`).all());
         break;
         //Meklē seriālus un epizodes atzīmētas ar 'mīļots'
         case '-2':
-            if (debug) console.log(db.prepare(`SELECT *, e.name AS ename, e.favourite AS efavourite FROM episode AS e, show AS s, story, time, genre, theme
-            WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme)
-            AND (e.favourite = 1 OR s.favourite = 1)
-            ${kartot(parseInt(kartosanasID), parseInt(virzID), true)};`).all());
-
             res.send(db.prepare(`SELECT *, e.name AS ename,
             CASE
-                    WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE user.user_id = id_user)) THEN 1
-                    ELSE 0
-            END AS efavourite,
-            CASE
-                WHEN (show_id IN (SELECT id_show FROM favouriteShows WHERE user.user_id = id_user)) THEN 1
-                ELSE 0
-            END AS sfavourite
+				WHEN (show_id IN (SELECT id_show FROM favouriteShows WHERE id_user = ${req.query.user} AND favourite = 1)) THEN 1
+				ELSE 0
+			END AS sfavourite,
+			CASE
+				WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE id_user = ${req.query.user} AND favourite = 1)) THEN 1
+				ELSE 0
+			END AS efavourite
             FROM episode AS e, show AS s, story, time, genre, theme, user
             WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme) 
-            AND (efavourite = 1 OR sfavourite = 1) AND ((user_id = (SELECT id_user FROM favouriteShows)) OR (user_id = (SELECT id_user FROM favouriteShows)))
+            AND (efavourite = 1 OR sfavourite = 1) AND (user_id = ${req.query.user})
             ${kartot(parseInt(kartosanasID), parseInt(virzID), true)};`).all());
         break;
     }
@@ -210,26 +209,26 @@ app.post('/clicked', (req, res) => {
     if (req.query.zanrs) zanrs = req.query.zanrs;
 
     res.send(db.prepare(`SELECT
-    e.name AS ename, e.date, e.season, e.episode, e.genre, logo, element1, element2, element3,
+    s.show_id, e.episode_id, s.name AS name, e.name AS ename, e.date, e.season, e.episode, e.genre, logo, element1, element2, element3,
 	CASE
-		WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE user.user_id = id_user)) THEN 1
+		WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE id_user = ${req.query.user} AND favourite = 1)) THEN 1
 		ELSE 0
 	END AS efavourite
     FROM episode AS e, show AS s, story, user
-    WHERE (s.show_id = e.id_show) AND (story_id = e.id_story) AND (user_id = (SELECT id_user FROM favouriteEpisodes))
+    WHERE (s.show_id = e.id_show) AND (story_id = e.id_story) AND (${req.query.user} IN (SELECT id_user FROM favouriteEpisodes)) AND (user_id = ${req.query.user})
     ${zanrs ? ` AND (genre LIKE '%${zanrs}%')` : ''}
     ${kartot(parseInt(kartosanasID), parseInt(virzID), true)};`).all());
 });
 
 //Meklē visus seriālus datu bāzē
-app.get('/seriali', (req, res) => {
+app.post('/seriali', (req, res) => {
     res.send(db.prepare(`SELECT show_id, name, logo, start_date, end_date, genre1, genre2, genre3, theme1, theme2, theme3,
     CASE
-        WHEN (show_id IN (SELECT id_show FROM favouriteShows WHERE user.user_id = id_user)) THEN 1
+        WHEN show_id IN (SELECT id_show FROM favouriteShows WHERE id_user = ${req.query.user} AND favourite = 1) THEN 1
         ELSE 0
         END AS sfavourite
     FROM show, time, genre, theme, user
-        WHERE (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme) AND (user_id = (SELECT id_user FROM favouriteShows));`).all());
+        WHERE (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme) AND (${req.query.user} IN (SELECT id_user FROM favouriteShows)) AND (user_id = ${req.query.user});`).all());
 });
 
 //Maina epizodu vai seriālu 'iecienit' vērtību
@@ -245,10 +244,18 @@ app.post('/iecienit', (req, res) => {
     //Pārbauda vai epizodes vai seriāla informācija tiek mainīta
     if (req.query.epizodesID) {
         epizode = req.query.epizodesID;
-        db.exec(`UPDATE episode SET favourite = ${f} WHERE episode_id = ${epizode}`);
+        //db.exec(`UPDATE favouriteEpisodes SET favourite = ${f} WHERE id_episode = ${epizode} AND id_user = ${req.query.user}`);
+        db.exec(`INSERT INTO favouriteEpisodes (id_user, id_episode, favourite) 
+        VALUES(${req.query.user}, '${epizode}', '${f}')
+        ON CONFLICT (id_user, id_episode) DO UPDATE
+        SET favourite = excluded.favourite;`);
     } else {
         serials = req.query.serialaID;
-        db.exec(`UPDATE show SET favourite = ${f} WHERE show_id = ${serials}`);
+        //db.exec(`UPDATE favouriteShows SET favourite = ${f} WHERE id_show = ${serials} AND id_user = ${req.query.user}`);
+        db.exec(`INSERT INTO favouriteShows (id_user, id_show, favourite) 
+        VALUES(${req.query.user}, '${serials}', '${f}')
+        ON CONFLICT (id_user, id_show) DO UPDATE
+        SET favourite = excluded.favourite;`);
     }
     res.send('throw');
 });

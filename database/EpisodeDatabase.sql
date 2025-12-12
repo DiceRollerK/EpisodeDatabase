@@ -149,14 +149,15 @@ CREATE TABLE favouriteShows (
 
 INSERT INTO favouriteShows VALUES(1,1,1);
 INSERT INTO favouriteShows VALUES(1,6,1);
+INSERT INTO favouriteShows VALUES(1,0,0);
+INSERT INTO favouriteShows VALUES(2,0,0);
 
 CREATE TABLE settings (
 	id_user INT NOT NULL,
-	setting VARCHAR(30) NOT NULL,
-	value VARCHAR,
-	UNIQUE(id_user, setting)
+	theme VARCHAR(30) NOT NULL,
+	font VARCHAR(30) NOT NULL
 );
 
-INSERT INTO settings VALUES(1,'šrifts','comic-sans');
-INSERT INTO settings VALUES(1,'tēma','gaišs');
+INSERT INTO settings VALUES(1,'gaišs','helvetica');
+INSERT INTO settings VALUES(2,'tumšs','comic-sans');
 COMMIT;

@@ -22,7 +22,7 @@ document.getElementById("poga-visas-epizodes").addEventListener("click", () =>{
     //Aizsūt pieprasījumu uz adresi clicked, kas izvada visas epizodes
     //kartosanasID pasaka kā vērtības tiek kārtotas 
     //virzID saka vai vērtības būt kārtotas dilstoši vai augoši
-    fetch(`/clicked?kartosanasID=${kartosanasID}&virzID=${virzID}${zanrs != "Žanrs" ? '&zanrs='+zanrs : ''}`, {method: 'POST'})
+    fetch(`/clicked?kartosanasID=${kartosanasID}&virzID=${virzID}${zanrs != "Žanrs" ? '&zanrs='+zanrs : ''}&user=${user_id}`, {method: 'POST'})
     .then(function(response) {
         if(response.ok) {
             return response.json();
@@ -150,7 +150,7 @@ document.getElementById('poga-iecienitie').addEventListener('click', () => {
     let kartosanasID = document.getElementById('ievadaGrupasIzvele03').value;
     let virzID = document.getElementById('ievadaGrupasIzvele04').value;
 
-    fetch(`/meklet?meklesanasID=-2&kartosanasID=${kartosanasID}&virzID=${virzID}`, {method: 'POST'})
+    fetch(`/meklet?meklesanasID=-2&kartosanasID=${kartosanasID}&virzID=${virzID}&user=${user_id}`, {method: 'POST'})
     .then(function(response) {
         if(debug) console.log('5');
 
@@ -201,7 +201,11 @@ document.getElementById('poga-iecienitie').addEventListener('click', () => {
                 }
             } else {
                 for (let i = 0; i < seriali.length; i++) {
-                    serialaVeidosana(seriali, i);
+                    if (!serialuIDs.includes(seriali[i].show_id)) {
+                        serialuIDs.push(seriali[i].show_id);
+                        serialaVeidosana(seriali, i);
+                    }
+                    i++;
                 }
             }
             bultuVeidosana(2);
@@ -234,7 +238,7 @@ function meklet() {
         let kartosanasID = document.getElementById('ievadaGrupasIzvele03').value;
         let virzID = document.getElementById('ievadaGrupasIzvele04').value;
 
-    fetch(`/meklet?ievaditais=${tekstaVertiba}${zanrs != "Žanrs" ? '&zanrs='+zanrs : ''}&meklesanasID=${meklesanasID}&kartosanasID=${kartosanasID}&virzID=${virzID}`, {method: 'POST'})
+    fetch(`/meklet?ievaditais=${tekstaVertiba}${zanrs != "Žanrs" ? '&zanrs='+zanrs : ''}&meklesanasID=${meklesanasID}&kartosanasID=${kartosanasID}&virzID=${virzID}&user=${user_id}`, {method: 'POST'})
     .then(function(response) {
         if(response.ok) {
             return response.json();
@@ -307,7 +311,7 @@ function kluda(iemesls) {
         case 2:
             document.getElementById('epizozuIzvade').classList.add('bg-danger');
             document.getElementById('epizodem').classList.add('bg-danger');
-            teksts.innerHTML = 'Nav neviena iecienīta seriāla!'; 
+            teksts.innerHTML = 'Nav neviena iecienītas epizodes vai seriāla!'; 
             break;
         case 3:
             document.getElementById('epizozuIzvade').classList.add('bg-danger');
@@ -319,6 +323,7 @@ function kluda(iemesls) {
             document.getElementById('epizozuIzvade').classList.add('bg-danger');
             document.getElementById('epizodem').classList.add('bg-danger');
             teksts.innerHTML = 'Iestatījumi neielādējās, jo bija kļūda!'
+            nosacijumaIestatijumi();
             break;
         
     }
@@ -327,7 +332,7 @@ function kluda(iemesls) {
 //Izvada visus seriālus kas ir datu bāzē
 document.getElementById('poga-visi-seriali').addEventListener('click', (visiSeriali))
 function visiSeriali() {
-    fetch(`/seriali`, {method: 'GET'})
+    fetch(`/seriali?user=${user_id}`, {method: 'POST'})
     .then(function(response) {
         if(response.ok) {
             return response.json();
@@ -372,7 +377,7 @@ function serialaEpizodes() {
     //Seriālam 'Love, Death & Robots' bija kļūda, kas tika izlabota šifrējot to vērtību izmantojot šo funkciju
     tekstaVertiba = encodeURIComponent(tekstaVertiba);
 
-   fetch(`/meklet?serialaID=${tekstaVertiba}&meklesanasID=-1`, {method: 'POST'})
+   fetch(`/meklet?serialaID=${tekstaVertiba}&meklesanasID=-1&user=${user_id}`, {method: 'POST'})
     .then(function(response) {
         if(response.ok) {
             return response.json();
@@ -590,7 +595,7 @@ function iecienit() {
     this.classList.toggle('far');
     //Pārbauda vai tiek mīļota/nemīļota epizode vai seriāls
     if(this.dataset.epizode) {
-        fetch(`/iecienit?iecienit=${f}&epizodesID=${this.dataset.epizode}`, {method: 'POST'})
+        fetch(`/iecienit?iecienit=${f}&epizodesID=${this.dataset.epizode}&user=${user_id}`, {method: 'POST'})
             .then(function(response) {
         if(response.ok) {
             return;
@@ -601,7 +606,7 @@ function iecienit() {
             console.log(error);
         });
     } else {
-        fetch(`/iecienit?iecienit=${f}&serialaID=${this.dataset.serials}`, {method: 'POST'})
+        fetch(`/iecienit?iecienit=${f}&serialaID=${this.dataset.serials}&user=${user_id}`, {method: 'POST'})
             .then(function(response) {
         if(response.ok) {
             return;
@@ -872,13 +877,8 @@ function iestatijumi() {
         if (data[0] === undefined) {
             kluda(4);
         } else {
-            for (let i = 0; i < data.length; i++) {
-                if (data[i].setting == 'šrifts') {
-                    sriftaMaina(data[i].value);
-                } else if (data[i].setting == 'tēma') {
-                    krasasMaina(data[i].value);
-                }
-            }
+            krasasMaina(data[0].theme);
+            sriftaMaina(data[0].font);
         }
     })
     .catch(function(error) {
@@ -887,8 +887,13 @@ function iestatijumi() {
 }
 
 function sakums() {
+    user_id = 2;
     visiSeriali();
-    user_id = 1;
     iestatijumi();
+}
+
+function nosacijumaIestatijumi() {
+    krasasMaina('gaišs');
+    sriftaMaina('helvetica');
 }
 sakums();
