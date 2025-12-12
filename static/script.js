@@ -174,7 +174,7 @@ document.getElementById('poga-iecienitie').addEventListener('click', () => {
                 if (data[i].efavourite == 1) {
                     epizodes.push(data[i]);
                 }
-                if (data[i].favourite == 1) {
+                if (data[i].sfavourite == 1) {
                     seriali.push(data[i]);
                 }
             }
@@ -427,7 +427,7 @@ function serialaVeidosana(data, i) {
 
     //Zvaigzne kas atzīmē mīļotos seriālus
     let zvaigzne = document.createElement('p');
-    if(data[i].favourite == 1) {
+    if(data[i].sfavourite == 1) {
         zvaigzne.classList.add('fas', 'fa-star','ms-1','mt-2','me-3','z-1','position-absolute');
     } else {
         zvaigzne.classList.add('far', 'fa-star','ms-1','mt-2','me-3','z-1','position-absolute');
@@ -560,7 +560,7 @@ function iecienit() {
             //Maina vērtību izvadesDati, lai mainot lapu saglabājās vērtību aizejot atpakaļ
             for (let i in izvadesDati) {
                 if (izvadesDati[i].show_id == this.dataset.epizode) {
-                    izvadesDati[i].favourite = 0;
+                    izvadesDati[i].sfavourite = 0;
                 }
             }
         }
@@ -579,7 +579,7 @@ function iecienit() {
             //Maina vērtību izvadesDati, lai mainot lapu saglabājās vērtību aizejot atpakaļ
             for (let i in izvadesDati) {
                 if (izvadesDati[i].show_id == this.dataset.epizode) {
-                    izvadesDati[i].favourite = 1;
+                    izvadesDati[i].sfavourite = 1;
                     break;
                 }
             }
@@ -850,7 +850,6 @@ function sriftaMaina(srifts) {
     body = document.getElementById('body');
     body.className = '';
     body.classList.add(srifts);
-    console.log(srifts);
 }
 
 function krasasMaina(krasa) {
@@ -870,16 +869,13 @@ function iestatijumi() {
         throw new Error('Request failed.');
     })
     .then(function(data) {
-        console.log(data);
         if (data[0] === undefined) {
             kluda(4);
         } else {
             for (let i = 0; i < data.length; i++) {
                 if (data[i].setting == 'šrifts') {
-                    console.log('šrifts')
                     sriftaMaina(data[i].value);
                 } else if (data[i].setting == 'tēma') {
-                    console.log('tēma')
                     krasasMaina(data[i].value);
                 }
             }

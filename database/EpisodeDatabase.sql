@@ -109,17 +109,16 @@ CREATE TABLE show (
 	id_time	INT,
 	logo	TINYTEXT,
 	id_genre INT,
-	id_theme INT,
-	favourite INT
+	id_theme INT
 );
 
-INSERT INTO show VALUES(1,'Arrested Development',1,'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arrested_Development.svg/2560px-Arrested_Development.svg.png',1,1,0);
-INSERT INTO show VALUES(2,'Seinfeld',2,'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Seinfeld_logo.svg/2560px-Seinfeld_logo.svg.png',2,2,0);
-INSERT INTO show VALUES(3,'Room 104',3,'https://upload.wikimedia.org/wikipedia/en/d/d5/Room_104_teaser.png',3,3,0);
-INSERT INTO show VALUES(4,'Love, Death and Robots',4,'https://upload.wikimedia.org/wikipedia/en/c/cb/Love%2C_Death_%26_Robots_Logo.png',4,4,0);
-INSERT INTO show VALUES(5,'Inside No. 9',5,'https://upload.wikimedia.org/wikipedia/en/c/ce/Inside_No._9_series_one_DVD_cover.jpg',5,5,0);
-INSERT INTO show VALUES(6,'Nathan For You',6,'https://upload.wikimedia.org/wikipedia/en/d/db/Nathan_For_You_title.png',6,6,0);
-INSERT INTO show VALUES(7,'Jackass',7,'https://upload.wikimedia.org/wikipedia/en/thumb/2/22/Jackass-logo-2.svg/960px-Jackass-logo-2.svg.png',7,7,0);
+INSERT INTO show VALUES(1,'Arrested Development',1,'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Arrested_Development.svg/2560px-Arrested_Development.svg.png',1,1);
+INSERT INTO show VALUES(2,'Seinfeld',2,'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Seinfeld_logo.svg/2560px-Seinfeld_logo.svg.png',2,2);
+INSERT INTO show VALUES(3,'Room 104',3,'https://upload.wikimedia.org/wikipedia/en/d/d5/Room_104_teaser.png',3,3);
+INSERT INTO show VALUES(4,'Love, Death and Robots',4,'https://upload.wikimedia.org/wikipedia/en/c/cb/Love%2C_Death_%26_Robots_Logo.png',4,4);
+INSERT INTO show VALUES(5,'Inside No. 9',5,'https://upload.wikimedia.org/wikipedia/en/c/ce/Inside_No._9_series_one_DVD_cover.jpg',5,5);
+INSERT INTO show VALUES(6,'Nathan For You',6,'https://upload.wikimedia.org/wikipedia/en/d/db/Nathan_For_You_title.png',6,6);
+INSERT INTO show VALUES(7,'Jackass',7,'https://upload.wikimedia.org/wikipedia/en/thumb/2/22/Jackass-logo-2.svg/960px-Jackass-logo-2.svg.png',7,7);
 
 CREATE TABLE user (
 	user_id INT PRIMARY KEY NOT NULL,
@@ -127,7 +126,8 @@ CREATE TABLE user (
 	password VARCHAR(100) NOT NULL
 );
 
-INSERT INTO user VALUES(1,'Admin','Admin');
+INSERT INTO user VALUES(1,'admin','admin');
+INSERT INTO user VALUES(2,'user','user');
 
 CREATE TABLE favouriteEpisodes (
 	id_user INT NOT NULL,
@@ -138,6 +138,7 @@ CREATE TABLE favouriteEpisodes (
 
 INSERT INTO favouriteEpisodes VALUES(1,2,1);
 INSERT INTO favouriteEpisodes VALUES(1,5,1);
+INSERT INTO favouriteEpisodes VALUES(2,9,1);
 
 CREATE TABLE favouriteShows (
 	id_user INT NOT NULL,
