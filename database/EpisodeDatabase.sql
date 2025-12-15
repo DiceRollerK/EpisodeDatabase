@@ -126,8 +126,8 @@ CREATE TABLE user (
 	password VARCHAR(100) NOT NULL
 );
 
-INSERT INTO user VALUES(1,'admin','admin');
-INSERT INTO user VALUES(2,'user','user');
+INSERT INTO user VALUES(1,'admin','8df1e59086232f61546e3c86d158ae54');
+INSERT INTO user VALUES(2,'user','b4439a6eab2dd0bbf4de7f6d7755b98f');
 
 CREATE TABLE favouriteEpisodes (
 	id_user INT NOT NULL,

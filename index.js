@@ -264,9 +264,29 @@ app.post('/iestatijumi', (req, res) => {
     res.send(db.prepare(`SELECT * FROM settings WHERE id_user = ${req.query.user};`).all());
 });
 
-app.post('/login', (req, res) => {
-    res.send(db.prepare(`SELECT user_id FROM user WHERE password = '${req.query.parole}' AND username = '${req.query.lietotajVards}';`).all());
-});
-
 import Database from 'better-sqlite3';
 const db = new Database('./database/EpisodeDatabase.db');
+
+import crypto from 'crypto';
+
+const sals = 'JNk29U77hKoDAn3jrMrXYiHOXelztFhh';
+
+function parolesSifresana(parole) {
+    const algoritms = 'aes-192-cbc';
+
+    const atslega = crypto.scryptSync(parole, 'JNk29U77hKoDAn3jrMrXYiHOXelztFhh', 24);
+
+    const sakumaVektors = Buffer.alloc(16, 0);
+
+    const sifrs = crypto.createCipheriv(algoritms, atslega, sakumaVektors);
+
+    let sifretaParole = sifrs.final('hex');
+
+    return sifretaParole;
+}
+
+app.post('/login', (req, res) => {
+    console.log(db.prepare(`SELECT password FROM user WHERE username = '${req.query.lietotajVards}';`).all()[0].password);
+    let parole = parolesSifresana(req.query.parole);
+    res.send(db.prepare(`SELECT user_id FROM user WHERE password = '${parole}' AND username = '${req.query.lietotajVards}';`).all());
+});

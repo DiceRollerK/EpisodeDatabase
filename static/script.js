@@ -168,6 +168,8 @@ document.getElementById('poga-iecienitie').addEventListener('click', () => {
         if (data[0] === undefined) {
             kluda(2);
         } else {
+            serialuLapa = 0;
+            epizozuLapa = 0;
             let seriali = [];
             let epizodes = [];
             for (let i = 0; i < data.length; i++) {
