@@ -2,7 +2,7 @@ PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
 
 CREATE TABLE time(
-time_id INT PRIMARY KEY NOT NULL,
+time_id INT PRIMARY KEY,
 start_date DATETIME,
 end_date DATETIME
 );
@@ -16,7 +16,7 @@ INSERT INTO time VALUES(6,'2013-02-28','2017-11-09');
 INSERT INTO time VALUES(7,'2000-10-01','2001-08-12');
 
 CREATE TABLE genre(
-genre_id INT PRIMARY KEY NOT NULL,
+genre_id INT PRIMARY KEY,
 genre1 VARCHAR(45),
 genre2 VARCHAR(45),
 genre3 VARCHAR(45)
@@ -31,7 +31,7 @@ INSERT INTO genre VALUES(6,'Komēdija','Realitātes',NULL);
 INSERT INTO genre VALUES(7,'Komēdija','Realitātes',NULL);
 
 CREATE TABLE story(
-story_id INT PRIMARY KEY NOT NULL,
+story_id INT PRIMARY KEY,
 element1 VARCHAR(45),
 element2 VARCHAR(45),
 element3 VARCHAR(45)
@@ -58,7 +58,7 @@ INSERT INTO story VALUES(18,'Kakas garšas jogurts','Darba intervija','Bezmaksa 
 INSERT INTO story VALUES(19,'Nolaupība','Resnie tērpi','Pašaizsardzība');
 
 CREATE TABLE theme(
-theme_id INT PRIMARY KEY NOT NULL,
+theme_id INT PRIMARY KEY,
 theme1 VARCHAR(45),
 theme2 VARCHAR(45),
 theme3 VARCHAR(45)
@@ -73,7 +73,7 @@ INSERT INTO theme VALUES(6,'Komercdarbība','Muļķīgi plāni','Parodija');
 INSERT INTO theme VALUES(7,'Stulbība','Draudzība','Ievainojumi');
 
 CREATE TABLE episode(
-episode_id INT PRIMARY KEY NOT NULL,
+episode_id INT PRIMARY KEY,
 name VARCHAR(90),
 date DATETIME,
 season TINYINT,
@@ -104,7 +104,7 @@ INSERT INTO episode VALUES(18,'Yogurt Shop / Pizzeria','2013-02-28',1,1,'Realit�
 INSERT INTO episode VALUES(19,'Poo Cocktail','2000-10-01',1,1,'Realitātes-komēdija',7,19);
 
 CREATE TABLE show (
-	show_id	INT PRIMARY KEY NOT NULL,
+	show_id	INT PRIMARY KEY,
 	name	VARCHAR(90) NOT NULL,
 	id_time	INT,
 	logo	TINYTEXT,
@@ -121,11 +121,13 @@ INSERT INTO show VALUES(6,'Nathan For You',6,'https://upload.wikimedia.org/wikip
 INSERT INTO show VALUES(7,'Jackass',7,'https://upload.wikimedia.org/wikipedia/en/thumb/2/22/Jackass-logo-2.svg/960px-Jackass-logo-2.svg.png',7,7);
 
 CREATE TABLE user (
-	user_id INT PRIMARY KEY NOT NULL,
+	user_id INTEGER PRIMARY KEY AUTOINCREMENT,
 	username VARCHAR(30) NOT NULL,
-	password VARCHAR(100) NOT NULL
+	password VARCHAR(100) NOT NULL,
+	UNIQUE(username, password)
 );
 
+INSERT INTO user VALUES(0,'guest','');
 INSERT INTO user VALUES(1,'admin','8df1e59086232f61546e3c86d158ae54');
 INSERT INTO user VALUES(2,'user','b4439a6eab2dd0bbf4de7f6d7755b98f');
 
@@ -136,8 +138,6 @@ CREATE TABLE favouriteEpisodes (
 	UNIQUE(id_user, id_episode)
 );
 
-INSERT INTO favouriteEpisodes VALUES(1,0,0);
-INSERT INTO favouriteEpisodes VALUES(2,0,0);
 INSERT INTO favouriteEpisodes VALUES(1,2,1);
 INSERT INTO favouriteEpisodes VALUES(1,5,1);
 INSERT INTO favouriteEpisodes VALUES(1,3,1);
@@ -154,16 +154,14 @@ CREATE TABLE favouriteShows (
 	UNIQUE(id_user, id_show)
 );
 
-INSERT INTO favouriteShows VALUES(1,0,0);
-INSERT INTO favouriteShows VALUES(2,0,0);
 INSERT INTO favouriteShows VALUES(1,1,1);
 INSERT INTO favouriteShows VALUES(2,4,1);
 INSERT INTO favouriteShows VALUES(2,7,1);
 
 CREATE TABLE settings (
-	id_user INT NOT NULL,
-	theme VARCHAR(30) NOT NULL,
-	font VARCHAR(30) NOT NULL
+	id_user INT PRIMARY KEY,
+	theme VARCHAR(30),
+	font VARCHAR(30)
 );
 
 INSERT INTO settings VALUES(1,'gaišs','helvetica');

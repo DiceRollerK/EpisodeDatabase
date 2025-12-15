@@ -146,6 +146,7 @@ document.getElementById("teksta-ievade").addEventListener("keydown", function(e)
 
 //Izvada visas epizodes un seriālus kurus lietotājs ir atzīmējis kā "mīļotus"
 document.getElementById('poga-iecienitie').addEventListener('click', () => {
+    if (user_id != 0) {
     if(debug) console.log('4');
     let kartosanasID = document.getElementById('ievadaGrupasIzvele03').value;
     let virzID = document.getElementById('ievadaGrupasIzvele04').value;
@@ -218,6 +219,9 @@ document.getElementById('poga-iecienitie').addEventListener('click', () => {
     .catch(function(error) {
         console.log(error);
     });
+    } else {
+        kluda(7);
+    }
 });
 
 //Meklēšanas funkcija
@@ -324,10 +328,23 @@ function kluda(iemesls) {
         case 4:
             document.getElementById('epizozuIzvade').classList.add('bg-danger');
             document.getElementById('epizodem').classList.add('bg-danger');
-            teksts.innerHTML = 'Iestatījumi neielādējās, jo bija kļūda!'
-            nosacijumaIestatijumi();
+            teksts.innerHTML = 'Nepareizi ievadīti dati, vai neeksistējošs konts!'
             break;
-        
+        case 5:
+            document.getElementById('epizozuIzvade').classList.add('bg-danger');
+            document.getElementById('epizodem').classList.add('bg-danger');
+            teksts.innerHTML = 'Jums vajadzēs izveidot kontu lai darīt to!'
+            break;
+        case 6: 
+            document.getElementById('epizozuIzvade').classList.add('bg-danger');
+            document.getElementById('epizodem').classList.add('bg-danger');
+            teksts.innerHTML = 'Konts ar tādu lietotājvārdu jau eksistē!'
+            break;
+        case 7:
+            document.getElementById('epizozuIzvade').classList.add('bg-danger');
+            document.getElementById('epizodem').classList.add('bg-danger');
+            teksts.innerHTML = 'Iecienitos var apskatīt tikai ar kontu!'
+            break;
     }
 }
 
@@ -550,6 +567,7 @@ function epizodesVeidosana(data, i) {
 
 //Padara epizodi vai seriālu par mīļāko, lai to varētu ātrāk atrast
 function iecienit() {
+    if (user_id != 0) {
     let f;
     //Ja klase ir fas, tad seriāls vai epizode jau ir atzīmēti kā mīļoti, citādāk tie nav atzīmēti kā mīļoti
     if (this.classList.contains('fas')) {
@@ -618,6 +636,9 @@ function iecienit() {
         .catch(function(error) {
             console.log(error);
         });
+    }
+    } else {
+        kluda(5);
     }
 }
 
@@ -854,12 +875,36 @@ function iztirit() {
 }
 
 function sriftaMaina(srifts) {
+    if (user_id != 0) {
+    fetch(`/iestatijumi?user=${user_id}&font=${srifts}`, {method: 'POST'})
+    .then(function(response) {
+        if(response.ok) {
+            return;
+        }
+        throw new Error('Request failed.');
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+    }
     body = document.getElementById('body');
     body.className = '';
     body.classList.add(srifts);
 }
 
 function krasasMaina(krasa) {
+    if (user_id != 0) {
+    fetch(`/iestatijumi?user=${user_id}&theme=${krasa}`, {method: 'POST'})
+    .then(function(response) {
+        if(response.ok) {
+            return;
+        }
+        throw new Error('Request failed.');
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+    }
     if (krasa == 'tumšs') {
         tumsaisRezims(true);
     } else {
@@ -868,6 +913,7 @@ function krasasMaina(krasa) {
 }
 
 function iestatijumi() {
+    if (user_id != 0) {
     fetch(`/iestatijumi?user=${user_id}`, {method: 'POST'})
     .then(function(response) {
         if(response.ok) {
@@ -877,7 +923,7 @@ function iestatijumi() {
     })
     .then(function(data) {
         if (data[0] === undefined) {
-            kluda(4);
+            nosacijumaIestatijumi();
         } else {
             krasasMaina(data[0].theme);
             sriftaMaina(data[0].font);
@@ -886,10 +932,13 @@ function iestatijumi() {
     .catch(function(error) {
         console.log(error);
     });
+    } else {
+        nosacijumaIestatijumi();
+    }
 }
 
 function sakums() {
-    if (user_id == null) user_id = 1;
+    if (user_id == null) user_id = 0;
     visiSeriali();
     iestatijumi();
 }
@@ -901,8 +950,9 @@ function nosacijumaIestatijumi() {
 sakums();
 
 document.getElementById('login').addEventListener('click', () => {
-    let lietotajVards = document.getElementById('lietotajVards').value;
-    let parole = document.getElementById('parole').value;
+    let lietotajVards = document.getElementById('logLietotajVards').value;
+    let parole = document.getElementById('logParole').value;
+    console.log(parole);
     fetch(`/login?lietotajVards=${lietotajVards}&parole=${parole}`, {method: 'POST'})
     .then(function(response) {
         if(response.ok) {
@@ -916,6 +966,37 @@ document.getElementById('login').addEventListener('click', () => {
         } else {
             user_id = data[0].user_id;
             sakums();
+        }
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+});
+
+document.getElementById('register').addEventListener('click', () => {
+    let lietotajVards = document.getElementById('regLietotajVards').value;
+    let parole = document.getElementById('regParole').value;
+    fetch(`/register?lietotajVards=${lietotajVards}&parole=${parole}`, {method: 'POST'})
+    .then(function(response) {
+        if(response.ok) {
+            return response.json();
+        } 
+        throw new Error('Request failed.');
+    })
+    .then(function(data) {
+        if (data[0] === undefined) {
+            sakums();
+            izvadesDati = [];
+            iztirit();
+            document.getElementById('epizozuIzvade').style.display = 'flex';
+            let kludasKaste = document.createElement("div");
+            document.getElementById("epizodem").appendChild(kludasKaste);
+            kludasKaste.classList.add('output-inside')
+            let teksts = document.createElement('p');
+            kludasKaste.appendChild(teksts);
+            teksts.innerHTML = 'Jūs veiksmīgi piereģistrējāties!.'; 
+        } else {
+            kluda(6);
         }
     })
     .catch(function(error) {

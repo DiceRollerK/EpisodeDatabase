@@ -65,8 +65,8 @@ app.post('/meklet', (req, res) => {
             ELSE 0
             END AS efavourite 
             FROM episode AS e, show AS s, story, user
-            WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (user_id = (SELECT id_user FROM favouriteEpisodes))${zanrs ? ` AND (genre LIKE '%${zanrs}%')` : ''} 
-            AND (${vaicajums}) AND (${req.query.user} IN (SELECT id_user FROM favouriteEpisodes))
+            WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (user_id = ${req.query.user})${zanrs ? ` AND (genre LIKE '%${zanrs}%')` : ''} 
+            AND (${vaicajums})
             ORDER BY CASE WHEN (ename LIKE '${req.query.ievaditais}%' OR s.name LIKE '${req.query.ievaditais}%' OR element1 LIKE '${req.query.ievaditais}%' OR element2 LIKE '${req.query.ievaditais}%' OR element3 LIKE '${req.query.ievaditais}%') THEN 1 ELSE 2 END 
             ${kartot(parseInt(kartosanasID), parseInt(virzID), false)};`).all());
         break;
@@ -84,7 +84,7 @@ app.post('/meklet', (req, res) => {
             ELSE 0
             END AS efavourite 
             FROM episode AS e, show AS s, story, user
-            WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (user_id = (SELECT id_user FROM favouriteEpisodes))${zanrs ? ` AND (genre LIKE '%${zanrs}%' )` : ''} 
+            WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (user_id = ${req.query.user})${zanrs ? ` AND (genre LIKE '%${zanrs}%' )` : ''} 
             AND (${vaicajums}) AND (${req.query.user} IN (SELECT id_user FROM favouriteEpisodes))
             ORDER BY CASE WHEN (ename LIKE '${req.query.ievaditais}%') THEN 1 ELSE 2 END 
             ${kartot(parseInt(kartosanasID), parseInt(virzID), false)};`).all());
@@ -104,7 +104,7 @@ app.post('/meklet', (req, res) => {
             ELSE 0
             END AS efavourite 
             FROM episode AS e, show AS s, story, user
-            WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (user_id = (SELECT id_user FROM favouriteEpisodes))${zanrs ? ` AND (genre LIKE '%${zanrs}%')` : ''} 
+            WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (user_id = ${req.query.user})${zanrs ? ` AND (genre LIKE '%${zanrs}%')` : ''} 
             AND (${vaicajums}) AND (${req.query.user} IN (SELECT id_user FROM favouriteEpisodes))
             ORDER BY CASE WHEN (s.name LIKE '${req.query.ievaditais}%') THEN 1 ELSE 2 END 
             ${kartot(parseInt(kartosanasID), parseInt(virzID), false)};`).all());
@@ -124,7 +124,7 @@ app.post('/meklet', (req, res) => {
             ELSE 0
             END AS efavourite 
             FROM episode AS e, show AS s, story, user
-            WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (user_id = (SELECT id_user FROM favouriteEpisodes))${zanrs ? ` AND (genre LIKE '%${zanrs}%')` : ''} 
+            WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (user_id = ${req.query.user})${zanrs ? ` AND (genre LIKE '%${zanrs}%')` : ''} 
             AND (${vaicajums}) AND (${req.query.user} IN (SELECT id_user FROM favouriteEpisodes))
             ORDER BY CASE WHEN (element1 LIKE '${req.query.ievaditais}%' OR element2 LIKE '${req.query.ievaditais}%' OR element3 LIKE '${req.query.ievaditais}%') THEN 1 ELSE 2 END 
             ${kartot(parseInt(kartosanasID), parseInt(virzID), false)};`).all());
@@ -141,7 +141,7 @@ app.post('/meklet', (req, res) => {
                 ELSE 0
             END AS efavourite 
             FROM episode AS e, show AS s, story, time, genre, theme, user
-            WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme) AND (user_id = (SELECT id_user FROM favouriteEpisodes)) AND (${req.query.user} IN (SELECT id_user FROM favouriteEpisodes))
+            WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme) AND (user_id = ${req.query.user})
             AND (show_id = ${serialaID}) ORDER BY season ASC, episode ASC;`).all());
         break;
         //Meklē seriālus un epizodes atzīmētas ar 'mīļots'
@@ -215,7 +215,7 @@ app.post('/clicked', (req, res) => {
 		ELSE 0
 	END AS efavourite
     FROM episode AS e, show AS s, story, user
-    WHERE (s.show_id = e.id_show) AND (story_id = e.id_story) AND (${req.query.user} IN (SELECT id_user FROM favouriteEpisodes)) AND (user_id = ${req.query.user})
+    WHERE (s.show_id = e.id_show) AND (story_id = e.id_story) AND (user_id = ${req.query.user})
     ${zanrs ? ` AND (genre LIKE '%${zanrs}%')` : ''}
     ${kartot(parseInt(kartosanasID), parseInt(virzID), true)};`).all());
 });
@@ -228,7 +228,7 @@ app.post('/seriali', (req, res) => {
         ELSE 0
         END AS sfavourite
     FROM show, time, genre, theme, user
-        WHERE (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme) AND (${req.query.user} IN (SELECT id_user FROM favouriteShows)) AND (user_id = ${req.query.user});`).all());
+        WHERE (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme) AND (user_id = ${req.query.user});`).all());
 });
 
 //Maina epizodu vai seriālu 'iecienit' vērtību
@@ -261,12 +261,25 @@ app.post('/iecienit', (req, res) => {
 });
 
 app.post('/iestatijumi', (req, res) => {
-    res.send(db.prepare(`SELECT * FROM settings WHERE id_user = ${req.query.user};`).all());
+    if (req.query.font) {
+        db.exec(`INSERT INTO settings(id_user, font) VALUES('${req.query.user}','${req.query.font}')
+            ON CONFLICT (id_user) DO UPDATE 
+            SET font = excluded.font;`);
+        res.send('throw');
+    } else if (req.query.theme) {
+        db.exec(`INSERT INTO settings(id_user, theme) VALUES('${req.query.user}','${req.query.theme}')
+            ON CONFLICT (id_user) DO UPDATE 
+            SET theme = excluded.theme;`);
+        res.send('throw');
+    } else {
+        res.send(db.prepare(`SELECT * FROM settings WHERE id_user = ${req.query.user};`).all());
+    }
 });
 
 import Database from 'better-sqlite3';
 const db = new Database('./database/EpisodeDatabase.db');
 
+//Ielogošanās
 import crypto from 'crypto';
 
 const sals = 'JNk29U77hKoDAn3jrMrXYiHOXelztFhh';
@@ -286,7 +299,17 @@ function parolesSifresana(parole) {
 }
 
 app.post('/login', (req, res) => {
-    console.log(db.prepare(`SELECT password FROM user WHERE username = '${req.query.lietotajVards}';`).all()[0].password);
     let parole = parolesSifresana(req.query.parole);
+    console.log(parole);
+    console.log(db.prepare(`SELECT password FROM user WHERE username = 'lietotajs'`).all()[0])
     res.send(db.prepare(`SELECT user_id FROM user WHERE password = '${parole}' AND username = '${req.query.lietotajVards}';`).all());
 });
+
+app.post('/register', (req, res) => {
+    let parole = parolesSifresana(req.query.parole);
+    res.send(db.prepare(`SELECT user_id FROM user WHERE username = '${req.query.lietotajVards}'`).all());
+    if (db.prepare(`SELECT user_id FROM user WHERE username = '${req.query.lietotajVards}'`).all()[0] == undefined) {
+        db.exec(`INSERT INTO user (username, password) VALUES('${req.query.lietotajVards}', '${parole}')
+                ON CONFLICT DO NOTHING;`);
+    }
+})

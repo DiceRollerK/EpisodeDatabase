@@ -17,7 +17,7 @@ Ko meklē un žanra izvēles neko vēl nedara, bet var ierakstīt epizodes vai s
 Arī uzspiežot uz seriāla logo var saņemt visas epizodes no tā seriāla kas ir datu bāzē
 
 # Konti
-Saitē uzspiežot uz cilvēciņu simbolu labajā augšējā stūrī var pielogoties kontam, pagaidām nevar izveidot savu kontu caur saiti, bet ir testa konti kuros var ieiet:
+Saitē uzspiežot uz cilvēciņu simbolu labajā augšējā stūrī var pielogoties kontam un izveidot savu kontu, ir arī 2 testa konti (tiem nav speciālas funkcijas pagaidām) kuros var ieiet:
 
 (Lietotājvārds, parole)
 * admin, admin

@@ -25,14 +25,15 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Aizvērt"></button>
                     </div>
                     <div class="modal-body">
+                        <p class="bg-warning border-radius rounded text-center text-black">Iestatījumi tikai saglabāsies ja jūs būsiet pierakstīti kontā!</p>
                         <div class="dropdown">
                             <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Krāsas režīms
                             </button>
                             <div>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#" onclick="tumsaisRezims(false)">Gaišais režīms</a></li>
-                                    <li><a class="dropdown-item" href="#" onclick="tumsaisRezims(true)">Tumšais režīms</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="krasasMaina('gaišs')">Gaišais režīms</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="krasasMaina('tumšs')">Tumšais režīms</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -60,15 +61,38 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="modalLabel">Iestatījumi</h1>
+                        <h1 class="modal-title fs-5" id="modalLabel">Pierakstīšanās</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Aizvērt"></button>
                     </div>
                     <div class="modal-body">
                         <div class="input-group mb-3">
-                            <input id="lietotajVards" type="text" class="form-control" placeholder="Username" aria-label="Username">
-                            <input id="parole" type="password" class="form-control" placeholder="Parole" aria-label="Password">
+                            <input id="logLietotajVards" type="text" class="form-control" placeholder="Lietotājvārds" aria-label="Username">
+                            <input id="logParole" type="password" class="form-control" placeholder="Parole" aria-label="Password">
                             <button class="btn btn-primary" type="button" id="login">login</button>
                         </div>
+                        <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#registerModal">reģistrēties</a>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Aizvērt</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Konta reģistrēšanās logs -->
+        <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="modalLabel">Pierakstīšanās</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Aizvērt"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group mb-3">
+                            <input id="regLietotajVards" type="text" class="form-control" placeholder="Lietotājvārds" aria-label="Username">
+                            <input id="regParole" type="password" class="form-control" placeholder="Parole" aria-label="Password">
+                            <button class="btn btn-primary" type="button" id="register">reģistrēties</button>
+                        </div>
+                        <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#loginModal">ielogoties</a >
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Aizvērt</button>
