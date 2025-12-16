@@ -60,7 +60,7 @@ app.post('/meklet', (req, res) => {
                 vaicajums = vaicajums+`(ename LIKE '%${meklejums[i]}%' OR s.name LIKE '%${meklejums[i]}%' OR element1 LIKE '%${meklejums[i]}%' OR element2 LIKE '%${meklejums[i]}%' OR element3 LIKE '%${meklejums[i]}%')`
             }
 
-            res.send(db.prepare(`SELECT *, e.name AS ename, CASE
+            res.send(db.prepare(`SELECT s.name, date, season, episode, genre, logo, element1, element2, element3, e.name AS ename, CASE
             WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE id_user = ${req.query.user} AND favourite = 1)) THEN 1
             ELSE 0
             END AS efavourite 
@@ -79,13 +79,13 @@ app.post('/meklet', (req, res) => {
                 }
                 vaicajums = vaicajums+`(ename LIKE '%${meklejums[i]}%')`
             }
-            res.send(db.prepare(`SELECT *, e.name AS ename, CASE
-            WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE id_user = ${req.query.user} AND favourite = 1))) THEN 1
+            res.send(db.prepare(`SELECT s.name, date, season, episode, genre, logo, element1, element2, element3, e.name AS ename, CASE
+            WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE id_user = ${req.query.user} AND favourite = 1)) THEN 1
             ELSE 0
             END AS efavourite 
             FROM episode AS e, show AS s, story, user
             WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (user_id = ${req.query.user})${zanrs ? ` AND (genre LIKE '%${zanrs}%' )` : ''} 
-            AND (${vaicajums}) AND (${req.query.user} IN (SELECT id_user FROM favouriteEpisodes))
+            AND (${vaicajums})
             ORDER BY CASE WHEN (ename LIKE '${req.query.ievaditais}%') THEN 1 ELSE 2 END 
             ${kartot(parseInt(kartosanasID), parseInt(virzID), false)};`).all());
         break;
@@ -99,13 +99,13 @@ app.post('/meklet', (req, res) => {
                 vaicajums = vaicajums+`(s.name LIKE '%${meklejums[i]}%')`
             }
 
-            res.send(db.prepare(`SELECT *, e.name AS ename, CASE
-            WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE id_user = ${req.query.user} AND favourite = 1))) THEN 1
+            res.send(db.prepare(`SELECT s.name, date, season, episode, genre, logo, element1, element2, element3, e.name AS ename, CASE
+            WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE id_user = ${req.query.user} AND favourite = 1)) THEN 1
             ELSE 0
             END AS efavourite 
             FROM episode AS e, show AS s, story, user
             WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (user_id = ${req.query.user})${zanrs ? ` AND (genre LIKE '%${zanrs}%')` : ''} 
-            AND (${vaicajums}) AND (${req.query.user} IN (SELECT id_user FROM favouriteEpisodes))
+            AND (${vaicajums})
             ORDER BY CASE WHEN (s.name LIKE '${req.query.ievaditais}%') THEN 1 ELSE 2 END 
             ${kartot(parseInt(kartosanasID), parseInt(virzID), false)};`).all());
         break;
@@ -119,19 +119,20 @@ app.post('/meklet', (req, res) => {
                 vaicajums = vaicajums+`(element1 LIKE '%${meklejums[i]}%' OR element2 LIKE '%${meklejums[i]}%' OR element3 LIKE '%${meklejums[i]}%')`
             }
             
-            res.send(db.prepare(`SELECT *, e.name AS ename, CASE
-            WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE id_user = ${req.query.user} AND favourite = 1))) THEN 1
+            res.send(db.prepare(`SELECT s.name, date, season, episode, genre, logo, element1, element2, element3, e.name AS ename, CASE
+            WHEN (e.episode_id IN (SELECT id_episode FROM favouriteEpisodes WHERE id_user = ${req.query.user} AND favourite = 1)) THEN 1
             ELSE 0
             END AS efavourite 
             FROM episode AS e, show AS s, story, user
             WHERE (s.show_id = e.id_show) AND (story_id = id_story) AND (user_id = ${req.query.user})${zanrs ? ` AND (genre LIKE '%${zanrs}%')` : ''} 
-            AND (${vaicajums}) AND (${req.query.user} IN (SELECT id_user FROM favouriteEpisodes))
+            AND (${vaicajums})
             ORDER BY CASE WHEN (element1 LIKE '${req.query.ievaditais}%' OR element2 LIKE '${req.query.ievaditais}%' OR element3 LIKE '${req.query.ievaditais}%') THEN 1 ELSE 2 END 
             ${kartot(parseInt(kartosanasID), parseInt(virzID), false)};`).all());
         break;
         //Meklē visas epizodes no kāda seriāla
         case '-1':
-            res.send(db.prepare(`SELECT *, e.name AS ename,
+            res.send(db.prepare(`SELECT s.name, date, season, episode, genre, logo, element1, element2, element3, e.name AS ename, 
+                                start_date, end_date, genre1, genre2, genre3, theme1, theme2, theme3,
             CASE
 				WHEN (show_id IN (SELECT id_show FROM favouriteShows WHERE id_user = ${req.query.user} AND favourite = 1)) THEN 1
 				ELSE 0
@@ -146,7 +147,8 @@ app.post('/meklet', (req, res) => {
         break;
         //Meklē seriālus un epizodes atzīmētas ar 'mīļots'
         case '-2':
-            res.send(db.prepare(`SELECT *, e.name AS ename,
+            res.send(db.prepare(`SELECT s.name, date, season, episode, genre, logo, element1, element2, element3, e.name AS ename, 
+                                start_date, end_date, genre1, genre2, genre3, theme1, theme2, theme3,
             CASE
 				WHEN (show_id IN (SELECT id_show FROM favouriteShows WHERE id_user = ${req.query.user} AND favourite = 1)) THEN 1
 				ELSE 0
@@ -300,8 +302,6 @@ function parolesSifresana(parole) {
 
 app.post('/login', (req, res) => {
     let parole = parolesSifresana(req.query.parole);
-    console.log(parole);
-    console.log(db.prepare(`SELECT password FROM user WHERE username = 'lietotajs'`).all()[0])
     res.send(db.prepare(`SELECT user_id FROM user WHERE password = '${parole}' AND username = '${req.query.lietotajVards}';`).all());
 });
 

@@ -952,7 +952,6 @@ sakums();
 document.getElementById('login').addEventListener('click', () => {
     let lietotajVards = document.getElementById('logLietotajVards').value;
     let parole = document.getElementById('logParole').value;
-    console.log(parole);
     fetch(`/login?lietotajVards=${lietotajVards}&parole=${parole}`, {method: 'POST'})
     .then(function(response) {
         if(response.ok) {
