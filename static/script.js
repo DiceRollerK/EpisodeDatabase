@@ -144,6 +144,66 @@ document.getElementById("teksta-ievade").addEventListener("keydown", function(e)
     }
 });
 
+//Meklēšanas funkcija
+function meklet() {
+    if(debug) console.log('2')
+
+    let tekstaVertiba = document.getElementById('teksta-ievade').value;
+    if (tekstaVertiba == '') tekstaVertiba = 'Pier Pressure';
+
+    if(debug) console.log(/^[a-zA-Z0-9&,.'\! ]*$/g.test(tekstaVertiba));
+
+    if (/^[a-zA-Z0-9&,.'\! ]*$/g.test(tekstaVertiba)) {
+        tekstaVertiba = tekstaVertiba.replace('&', 'and');
+        tekstaVertiba = tekstaVertiba.replace('\'s', '');
+        tekstaVertiba = tekstaVertiba.replace('\'', '');
+
+
+        let zanrs = document.getElementById('ievadaGrupasIzvele02').value;
+        let meklesanasID = document.getElementById('ievadaGrupasIzvele01').value;
+        let kartosanasID = document.getElementById('ievadaGrupasIzvele03').value;
+        let virzID = document.getElementById('ievadaGrupasIzvele04').value;
+
+    fetch(`/meklet?ievaditais=${tekstaVertiba}${zanrs != "Žanrs" ? '&zanrs='+zanrs : ''}&meklesanasID=${meklesanasID}&kartosanasID=${kartosanasID}&virzID=${virzID}&user=${user_id}`, {method: 'POST'})
+    .then(function(response) {
+        if(response.ok) {
+            return response.json();
+        } 
+        throw new Error('Request failed.');
+    })
+    .then(function(data) {
+        //Paslēpj un idzēš vērtības kastē ar seriāliem, jo tos nevar atrast un izdzēš vērtības kastē ar epizodēm, lai tie netraucētu
+        iztirit();
+
+        //Pārbauda vai datu masīvā vispār ir vērtības
+        if (data[0] === undefined) {
+            kluda(0);
+        } else {
+            izvadesDati = data;
+            if(debug) console.log(data);
+            
+            if (data.length > 6) {
+                for (let i = 0; i < 6; i++) {
+                    epizodesVeidosana(data, i);
+                }
+            } else {
+                for (let i = 0; i < data.length; i++) {
+                    epizodesVeidosana(data, i);
+                }
+            }
+            //Pārbauda vai bultiņām jāizskatās uzspiežamām
+            bultuVeidosana(0);
+            bultuParbaude(0);
+        }
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
+    } else {
+        kluda(3);
+    }
+}
+
 //Izvada visas epizodes un seriālus kurus lietotājs ir atzīmējis kā "mīļotus"
 document.getElementById('poga-iecienitie').addEventListener('click', () => {
     if (user_id != 0) {
@@ -223,66 +283,6 @@ document.getElementById('poga-iecienitie').addEventListener('click', () => {
         kluda(7);
     }
 });
-
-//Meklēšanas funkcija
-function meklet() {
-    if(debug) console.log('2')
-
-    let tekstaVertiba = document.getElementById('teksta-ievade').value;
-    if (tekstaVertiba == '') tekstaVertiba = 'Pier Pressure';
-
-    if(debug) console.log(/^[a-zA-Z0-9&,.'\! ]*$/g.test(tekstaVertiba));
-
-    if (/^[a-zA-Z0-9&,.'\! ]*$/g.test(tekstaVertiba)) {
-        tekstaVertiba = tekstaVertiba.replace('&', 'and');
-        tekstaVertiba = tekstaVertiba.replace('\'s', '');
-        tekstaVertiba = tekstaVertiba.replace('\'', '');
-
-
-        let zanrs = document.getElementById('ievadaGrupasIzvele02').value;
-        let meklesanasID = document.getElementById('ievadaGrupasIzvele01').value;
-        let kartosanasID = document.getElementById('ievadaGrupasIzvele03').value;
-        let virzID = document.getElementById('ievadaGrupasIzvele04').value;
-
-    fetch(`/meklet?ievaditais=${tekstaVertiba}${zanrs != "Žanrs" ? '&zanrs='+zanrs : ''}&meklesanasID=${meklesanasID}&kartosanasID=${kartosanasID}&virzID=${virzID}&user=${user_id}`, {method: 'POST'})
-    .then(function(response) {
-        if(response.ok) {
-            return response.json();
-        } 
-        throw new Error('Request failed.');
-    })
-    .then(function(data) {
-        //Paslēpj un idzēš vērtības kastē ar seriāliem, jo tos nevar atrast un izdzēš vērtības kastē ar epizodēm, lai tie netraucētu
-        iztirit();
-
-        //Pārbauda vai datu masīvā vispār ir vērtības
-        if (data[0] === undefined) {
-            kluda(0);
-        } else {
-            izvadesDati = data;
-            if(debug) console.log(data);
-            
-            if (data.length > 6) {
-                for (let i = 0; i < 6; i++) {
-                    epizodesVeidosana(data, i);
-                }
-            } else {
-                for (let i = 0; i < data.length; i++) {
-                    epizodesVeidosana(data, i);
-                }
-            }
-            //Pārbauda vai bultiņām jāizskatās uzspiežamām
-            bultuVeidosana(0);
-            bultuParbaude(0);
-        }
-    })
-    .catch(function(error) {
-        console.log(error);
-    });
-    } else {
-        kluda(3);
-    }
-}
 
 //Izvada kļūdu ja nevarēja atrast jebkādu epizodi datu bāzē
 function kluda(iemesls) {
@@ -939,6 +939,7 @@ function iestatijumi() {
 
 function sakums() {
     if (user_id == null) user_id = 0;
+    cepumaLogin();
     visiSeriali();
     iestatijumi();
 }
@@ -947,7 +948,6 @@ function nosacijumaIestatijumi() {
     krasasMaina('gaišs');
     sriftaMaina('helvetica');
 }
-sakums();
 
 document.getElementById('login').addEventListener('click', () => {
     let lietotajVards = document.getElementById('logLietotajVards').value;
@@ -964,6 +964,26 @@ document.getElementById('login').addEventListener('click', () => {
             kluda(4);
         } else {
             user_id = data[0].user_id;
+            fetch(`/cepumaVeidosana?user=${user_id}`, {method: 'POST'})
+            .then(function(response) {
+                if(response.ok) {
+                    return;
+                } 
+                throw new Error('Request failed.');
+            })
+            .catch(function(error) {
+                console.log(error);
+            })
+            fetch(`/cepumaSanemsana`, {method: 'GET'})
+            .then(function(response) {
+                if(response.ok) {
+                    return;
+                } 
+                throw new Error('Request failed.');
+            })
+            .catch(function(error) {
+                console.log(error);
+            })
             sakums();
         }
     })
@@ -971,6 +991,24 @@ document.getElementById('login').addEventListener('click', () => {
         console.log(error);
     });
 });
+
+function cepumaLogin() {
+    fetch(`/cepumaSanemsana`, {method: 'GET'})
+    .then(function(response) {
+        if(response.ok) {
+            return response.json();
+        } 
+        throw new Error('Request failed.');
+    })
+    .then(function(data) {
+        user_id = data.cepums;
+        visiSeriali();
+        iestatijumi();
+    })
+    .catch(function(error) {
+        console.log(error);
+    })
+}
 
 document.getElementById('register').addEventListener('click', () => {
     let lietotajVards = document.getElementById('regLietotajVards').value;
@@ -1002,3 +1040,12 @@ document.getElementById('register').addEventListener('click', () => {
         console.log(error);
     });
 });
+
+/*
+function zetonaVeidosana() {
+    let uuid = self.crypto.randomUUID();
+    console.log(uuid);
+}
+*/
+
+sakums();

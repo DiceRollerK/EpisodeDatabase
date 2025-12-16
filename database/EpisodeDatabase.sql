@@ -124,6 +124,7 @@ CREATE TABLE user (
 	user_id INTEGER PRIMARY KEY AUTOINCREMENT,
 	username VARCHAR(30) NOT NULL,
 	password VARCHAR(100) NOT NULL,
+	token VARCHAR(256),
 	UNIQUE(username, password)
 );
 

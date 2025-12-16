@@ -28,18 +28,22 @@ app.get('/', function(req, res) {
 app.post('/meklet', (req, res) => {
     let meklesanas_id = req.query.meklesanasID;
 
+    //Filtrē epizodes pēc žanra
     let zanrs;
     if (req.query.zanrs) zanrs = req.query.zanrs;
 
+    //Izmanto seriāla nosaukumu lai atrastu ID, kuru izmanto meklējumā kad seriāla logo tiek uzspiests un visas tā epizodes tiek izvadītas
     let serialaID;
     if (req.query.serialaID) { 
         let a = decodeURIComponent(req.query.serialaID);
         serialaID = db.prepare(`SELECT show_id FROM show WHERE name = '${a}' LIMIT 1`).all()[0].show_id;
     }
 
+    //KartosanasID saka pēc kā tiek kārtotas epizodes, virzID saka augoši vai dilstoši
     let kartosanasID = req.query.kartosanasID; 
     let virzID = req.query.virzID;
 
+    //Sadala ievadīto vērtību vārdos, un ievieto tos masīvā
     let meklejums = [];
     if (req.query.ievaditais) {
         meklejums = req.query.ievaditais.split(" ");
@@ -53,6 +57,7 @@ app.post('/meklet', (req, res) => {
         //Meklē visas vērtības
         case '0':
             vaicajums = '';
+            //Meklē katru vārdu ievadītajā vērtība ar katru meklējamo vērtību
             for (let i in meklejums) {
                 if (i > 0) {
                     vaicajums = vaicajums+' OR ';
@@ -73,6 +78,7 @@ app.post('/meklet', (req, res) => {
         //Meklē tikai epizožu nosaukums
         case '1':
             vaicajums = '';
+            //Meklē katru vārdu ievadītajā vērtība ar katru meklējamo vērtību
             for (let i in meklejums) {
                 if (i > 0) {
                     vaicajums = vaicajums+' OR ';
@@ -92,6 +98,7 @@ app.post('/meklet', (req, res) => {
         //Meklē tikai seriālu nosaukumus
         case '2':
             vaicajums = '';
+            //Meklē katru vārdu ievadītajā vērtība ar katru meklējamo vērtību
             for (let i in meklejums) {
                 if (i > 0) {
                     vaicajums = vaicajums+' OR ';
@@ -112,6 +119,7 @@ app.post('/meklet', (req, res) => {
         //Meklē tikai epizodes stāsta elementus
         case '3':
             vaicajums = '';
+            //Meklē katru vārdu ievadītajā vērtība ar katru meklējamo vērtību
             for (let i in meklejums) {
                 if (i > 0) {
                     vaicajums = vaicajums+' OR ';
@@ -298,11 +306,23 @@ function parolesSifresana(parole) {
     let sifretaParole = sifrs.final('hex');
 
     return sifretaParole;
-}
+};
 
 app.post('/login', (req, res) => {
     let parole = parolesSifresana(req.query.parole);
     res.send(db.prepare(`SELECT user_id FROM user WHERE password = '${parole}' AND username = '${req.query.lietotajVards}';`).all());
+});
+
+import cookieParser from 'cookie-parser';
+app.use(cookieParser());
+
+app.post('/cepumaVeidosana', (req, res) => {
+    let user_id = req.query.user;
+    res.cookie('cepums', user_id)
+    res.send('');
+});
+app.get('/cepumaSanemsana', (req, res) => {
+    res.send(req.cookies);
 });
 
 app.post('/register', (req, res) => {
@@ -312,4 +332,4 @@ app.post('/register', (req, res) => {
         db.exec(`INSERT INTO user (username, password) VALUES('${req.query.lietotajVards}', '${parole}')
                 ON CONFLICT DO NOTHING;`);
     }
-})
+});
