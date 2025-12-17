@@ -1026,7 +1026,7 @@ document.getElementById('register').addEventListener('click', () => {
     })
     .then(function(data) {
         if (data[0] === undefined) {
-            sakums();
+            iestatijumi();
             izvadesDati = [];
             iztirit();
             document.getElementById('epizozuIzvade').style.display = 'flex';
