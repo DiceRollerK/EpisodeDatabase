@@ -125,12 +125,13 @@ CREATE TABLE user (
 	username VARCHAR(30) NOT NULL,
 	password VARCHAR(100) NOT NULL,
 	token VARCHAR(256),
-	UNIQUE(username, password)
+	UNIQUE(username, password),
+	UNIQUE(token)
 );
 
-INSERT INTO user VALUES(0,'guest','');
-INSERT INTO user VALUES(1,'admin','8df1e59086232f61546e3c86d158ae54');
-INSERT INTO user VALUES(2,'user','b4439a6eab2dd0bbf4de7f6d7755b98f');
+INSERT INTO user(user_id, username, password) VALUES(0,'guest','');
+INSERT INTO user(user_id, username, password) VALUES(1,'admin','8df1e59086232f61546e3c86d158ae54');
+INSERT INTO user(user_id, username, password) VALUES(2,'user','b4439a6eab2dd0bbf4de7f6d7755b98f');
 
 CREATE TABLE favouriteEpisodes (
 	id_user INT NOT NULL,

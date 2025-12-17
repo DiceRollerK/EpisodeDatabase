@@ -140,7 +140,7 @@ app.post('/meklet', (req, res) => {
         //Meklē visas epizodes no kāda seriāla
         case '-1':
             res.send(db.prepare(`SELECT s.name, date, season, episode, genre, logo, element1, element2, element3, e.name AS ename, 
-                                start_date, end_date, genre1, genre2, genre3, theme1, theme2, theme3,
+                                start_date, end_date, genre1, genre2, genre3, theme1, theme2, theme3, show_id, episode_id,
             CASE
 				WHEN (show_id IN (SELECT id_show FROM favouriteShows WHERE id_user = ${req.query.user} AND favourite = 1)) THEN 1
 				ELSE 0
@@ -156,7 +156,7 @@ app.post('/meklet', (req, res) => {
         //Meklē seriālus un epizodes atzīmētas ar 'mīļots'
         case '-2':
             res.send(db.prepare(`SELECT s.name, date, season, episode, genre, logo, element1, element2, element3, e.name AS ename, 
-                                start_date, end_date, genre1, genre2, genre3, theme1, theme2, theme3,
+                                start_date, end_date, genre1, genre2, genre3, theme1, theme2, theme3, show_id, episode_id,
             CASE
 				WHEN (show_id IN (SELECT id_show FROM favouriteShows WHERE id_user = ${req.query.user} AND favourite = 1)) THEN 1
 				ELSE 0
@@ -290,7 +290,7 @@ import Database from 'better-sqlite3';
 const db = new Database('./database/EpisodeDatabase.db');
 
 //Ielogošanās
-import crypto from 'crypto';
+import crypto, { randomUUID } from 'crypto';
 
 const sals = 'JNk29U77hKoDAn3jrMrXYiHOXelztFhh';
 
@@ -318,12 +318,19 @@ app.use(cookieParser());
 
 app.post('/cepumaVeidosana', (req, res) => {
     let user_id = req.query.user;
-    res.cookie('cepums', user_id)
-    res.send('');
+    let token = randomUUID();
+    res.cookie('cepums', token, {httpOnly:true});
+    db.exec(`UPDATE user SET token = '${token}' WHERE user_id = ${user_id};`);
+    res.send('throw');
 });
 app.get('/cepumaSanemsana', (req, res) => {
-    res.send(req.cookies);
+    res.send(db.prepare(`SELECT user_id FROM user WHERE token = '${req.cookies.cepums}'`).all());
 });
+
+app.get('/dzestCepumu', (req, res) => {
+    res.clearCookie('cepums');
+    res.send('throw');
+})
 
 app.post('/register', (req, res) => {
     let parole = parolesSifresana(req.query.parole);

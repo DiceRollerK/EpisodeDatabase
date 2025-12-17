@@ -231,19 +231,23 @@ document.getElementById('poga-iecienitie').addEventListener('click', () => {
         } else {
             serialuLapa = 0;
             epizozuLapa = 0;
-            let seriali = [];
+
+            let serialuIDs = [];
+            serialuDati = [];
+
             let epizodes = [];
             for (let i = 0; i < data.length; i++) {
                 if (data[i].efavourite == 1) {
                     epizodes.push(data[i]);
                 }
                 if (data[i].sfavourite == 1) {
-                    seriali.push(data[i]);
+                    if (!serialuIDs.includes(data[i].show_id)) {
+                        serialuDati.push(data[i]);
+                        serialuIDs.push(data[i].show_id);
+                    }
                 }
             }
             izvadesDati = epizodes;
-            serialuDati = seriali;
-            let serialuIDs = [];
             if (epizodes.length > 6) {
                 for (let i = 0; i < 6; i++) {
                     epizodesVeidosana(epizodes, i);
@@ -253,22 +257,14 @@ document.getElementById('poga-iecienitie').addEventListener('click', () => {
                     epizodesVeidosana(epizodes, i);
                 }
             }
-            if (seriali.length > 6) {
+            if (serialuDati.length > 6) {
                 let i = 0;
-                while (i < seriali.length && serialuIDs.length < 6) {
-                    if (!serialuIDs.includes(seriali[i].show_id)) {
-                        serialuIDs.push(seriali[i].show_id);
-                        serialaVeidosana(seriali, i);
-                    }
-                    i++;
+                for (let i = 0; i < 6; i++) {
+                    serialaVeidosana(serialuDati, i);
                 }
             } else {
-                for (let i = 0; i < seriali.length; i++) {
-                    if (!serialuIDs.includes(seriali[i].show_id)) {
-                        serialuIDs.push(seriali[i].show_id);
-                        serialaVeidosana(seriali, i);
-                    }
-                    i++;
+                for (let i = 0; i < serialuDati.length; i++) {
+                    serialaVeidosana(serialuDati, i);
                 }
             }
             bultuVeidosana(2);
@@ -317,7 +313,7 @@ function kluda(iemesls) {
         case 2:
             document.getElementById('epizozuIzvade').classList.add('bg-danger');
             document.getElementById('epizodem').classList.add('bg-danger');
-            teksts.innerHTML = 'Nav neviena iecienītas epizodes vai seriāla!'; 
+            teksts.innerHTML = 'Nav neviena iecienīta epizode vai seriāls!'; 
             break;
         case 3:
             document.getElementById('epizozuIzvade').classList.add('bg-danger');
@@ -333,7 +329,7 @@ function kluda(iemesls) {
         case 5:
             document.getElementById('epizozuIzvade').classList.add('bg-danger');
             document.getElementById('epizodem').classList.add('bg-danger');
-            teksts.innerHTML = 'Jums vajadzēs izveidot kontu lai darīt to!'
+            teksts.innerHTML = 'Jums vajadzēs izveidot kontu lai iecienot kaut ko!'
             break;
         case 6: 
             document.getElementById('epizozuIzvade').classList.add('bg-danger');
@@ -343,7 +339,7 @@ function kluda(iemesls) {
         case 7:
             document.getElementById('epizozuIzvade').classList.add('bg-danger');
             document.getElementById('epizodem').classList.add('bg-danger');
-            teksts.innerHTML = 'Iecienitos var apskatīt tikai ar kontu!'
+            teksts.innerHTML = 'Iecienītos var apskatīt tikai ar kontu!'
             break;
     }
 }
@@ -938,10 +934,23 @@ function iestatijumi() {
 }
 
 function sakums() {
-    if (user_id == null) user_id = 0;
     cepumaLogin();
-    visiSeriali();
+}
+
+function viesaKonts() {
+    user_id = 0;
+    fetch(`/dzestCepumu`, {method: 'GET'})
+    .then(function(response) {
+        if(response.ok) {
+            return;
+        } 
+        throw new Error('Request failed.');
+    })
+    .catch(function(error) {
+        console.log(error);
+    });
     iestatijumi();
+    visiSeriali();
 }
 
 function nosacijumaIestatijumi() {
@@ -974,17 +983,8 @@ document.getElementById('login').addEventListener('click', () => {
             .catch(function(error) {
                 console.log(error);
             })
-            fetch(`/cepumaSanemsana`, {method: 'GET'})
-            .then(function(response) {
-                if(response.ok) {
-                    return;
-                } 
-                throw new Error('Request failed.');
-            })
-            .catch(function(error) {
-                console.log(error);
-            })
-            sakums();
+            iestatijumi();
+            visiSeriali();
         }
     })
     .catch(function(error) {
@@ -1001,7 +1001,11 @@ function cepumaLogin() {
         throw new Error('Request failed.');
     })
     .then(function(data) {
-        user_id = data.cepums;
+        if (data[0] === undefined) {
+            user_id = 0;
+        } else {
+            user_id = data[0].user_id;
+        }
         visiSeriali();
         iestatijumi();
     })
@@ -1040,12 +1044,5 @@ document.getElementById('register').addEventListener('click', () => {
         console.log(error);
     });
 });
-
-/*
-function zetonaVeidosana() {
-    let uuid = self.crypto.randomUUID();
-    console.log(uuid);
-}
-*/
 
 sakums();
