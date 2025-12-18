@@ -347,7 +347,8 @@ function kluda(iemesls) {
 //Izvada visus seriālus kas ir datu bāzē
 document.getElementById('poga-visi-seriali').addEventListener('click', (visiSeriali))
 function visiSeriali() {
-    fetch(`/seriali?user=${user_id}`, {method: 'POST'})
+    let zanrs = document.getElementById('ievadaGrupasIzvele02').value;
+    fetch(`/seriali?user=${user_id}${zanrs != "Žanrs" ? '&zanrs='+zanrs : ''}`, {method: 'POST'})
     .then(function(response) {
         if(response.ok) {
             return response.json();
@@ -961,6 +962,7 @@ function nosacijumaIestatijumi() {
 document.getElementById('login').addEventListener('click', () => {
     let lietotajVards = document.getElementById('logLietotajVards').value;
     let parole = document.getElementById('logParole').value;
+    console.log(parole);
     fetch(`/login?lietotajVards=${lietotajVards}&parole=${parole}`, {method: 'POST'})
     .then(function(response) {
         if(response.ok) {

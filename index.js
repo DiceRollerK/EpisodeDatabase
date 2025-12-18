@@ -232,13 +232,17 @@ app.post('/clicked', (req, res) => {
 
 //Meklē visus seriālus datu bāzē
 app.post('/seriali', (req, res) => {
+    let zanrs;
+    if (req.query.zanrs) zanrs = req.query.zanrs;
+
     res.send(db.prepare(`SELECT show_id, name, logo, start_date, end_date, genre1, genre2, genre3, theme1, theme2, theme3,
     CASE
         WHEN show_id IN (SELECT id_show FROM favouriteShows WHERE id_user = ${req.query.user} AND favourite = 1) THEN 1
         ELSE 0
         END AS sfavourite
     FROM show, time, genre, theme, user
-        WHERE (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme) AND (user_id = ${req.query.user});`).all());
+        WHERE (time_id = id_time) AND (genre_id = id_genre) AND (theme_id = id_theme) AND (user_id = ${req.query.user})
+        ${zanrs ? ` AND ((genre1 LIKE '%${zanrs}%') OR (genre2 LIKE '%${zanrs}%') OR (genre3 LIKE '%${zanrs}%'))` : ''};`).all());
 });
 
 //Maina epizodu vai seriālu 'iecienit' vērtību
